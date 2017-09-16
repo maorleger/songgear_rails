@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  resources :songs
   resources :musicians
   resources :home, only: [:show]
 

@@ -2,20 +2,10 @@
 
 require "rails_helper"
 require "ostruct"
+require "pry"
 
 RSpec.describe User, type: :model do
-  let!(:auth_hash) {
-    OpenStruct.new(
-      provider: "google",
-      uid: SecureRandom.hex(8),
-      info: OpenStruct.new(
-        first_name: "ml",
-        last_name: "ml",
-        email: "ml@example.com",
-        image: "some_url",
-      )
-    )
-  }
+  let!(:auth_hash) { OmniAuth.config.mock_auth[:google] }
 
   describe ".find_or_create_from_auth_hash" do
     describe "when the user does not exist" do

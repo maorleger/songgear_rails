@@ -33,19 +33,6 @@ RSpec.configure do |config|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
-  # Mock out the google OmniAuth hash for testing
-  OmniAuth.config.test_mode = true
-  OmniAuth.config.mock_auth[:google] = OmniAuth::AuthHash.new(
-    provider: "google",
-    uid: "12345",
-    info: {
-      first_name: "Test",
-      last_name: "User",
-      email: "test_user@example.com",
-      image: "http://avatar.example.com",
-    }
-  )
-
   # rspec-mocks config goes here. You can use an alternate test double
   # library (such as bogus or mocha) by changing the `mock_with` option here.
   config.mock_with :rspec do |mocks|
@@ -61,6 +48,24 @@ RSpec.configure do |config|
   # inherited by the metadata hash of host groups and examples, rather than
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
+
+
+  # Mock out the google OmniAuth hash for testing
+  OmniAuth.config.test_mode = true
+  OmniAuth.config.mock_auth[:google] = OmniAuth::AuthHash.new(
+    provider: "google",
+    uid: "12345",
+    info: {
+      first_name: "Test",
+      last_name: "User",
+      email: "test_user@example.com",
+      image: "http://avatar.example.com",
+    }
+  )
+
+  # randomize RSpec
+  config.order = :random
+  Kernel.srand config.seed
 
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.

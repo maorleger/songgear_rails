@@ -34,6 +34,10 @@ gem "jbuilder", "~> 2.5"
 # gem 'capistrano-rails', group: :development
 gem "omniauth-google-oauth2"
 
+# UI frameworks
+gem "materialize-sass"
+gem "jquery-rails"
+
 group :development, :test do
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
   gem "pry"

@@ -24,7 +24,7 @@ RSpec.describe SessionsController, type: :controller do
 
     it "redirects to the me controller" do
       do_request
-      expect(response).to redirect_to(me_path)
+      expect(response).to redirect_to(songs_path)
     end
   end
 

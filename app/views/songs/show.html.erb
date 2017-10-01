@@ -17,3 +17,26 @@
 
 <%= link_to 'Edit', edit_song_path(@song) %> |
 <%= link_to 'Back', songs_path %>
+
+<div class="song">
+  <div class="song__header">
+    <h3><%= @song.name %> - <%= @song.musician %></h3>
+  </div>
+  <div class="song__body">
+    <% if @song.youtube_url.present? %>
+
+      <div class="song__youtube">
+        <div class="youtube__player">
+          <iframe id="ytplayer" type="text/html" width="640" height="390" src="https://www.youtube.com/embed/<%= YoutubeParserHelper.video_id(@song.youtube_url) %>" frameborder="0"></iframe>
+        </div>
+        <div class="youtube__bookmarks">
+          bookmark goes here
+        </div>
+      </div>
+    <% end %>
+    <div class="song__notes">
+    </div>
+    <div class="song__comments">
+    </div>
+  </div>
+</div>

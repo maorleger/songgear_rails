@@ -39,6 +39,7 @@ group :development, :test do
   gem "pry"
   gem "spring-commands-rspec"
 end
+gem "material_design_lite-rails", "~> 1.3"
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.

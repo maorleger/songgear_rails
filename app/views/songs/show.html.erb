@@ -1,19 +1,9 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @song.name %>
-</p>
-
-<p>
-  <strong>Youtube url:</strong>
-  <%= @song.youtube_url %>
-</p>
-
-<p>
-  <strong>Musician:</strong>
-  <%= @song.musician %>
-</p>
-
-<%= link_to 'Edit', edit_song_path(@song) %> |
-<%= link_to 'Back', songs_path %>
+<div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--10-col">
+    <div class="mdl-card__title">
+      <%= @song.name %> - <%= @song.musician %>
+    </div>
+  </div>
+</div>

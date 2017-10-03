@@ -23,7 +23,7 @@
 
   <div class="field">
     <%= form.label :musician_id %>
-    <%= form.text_field :musician_id, id: :song_musician_id %>
+    <%= collection_select(:song, :musician_id, Musician.all, :id, :name, { prompt: true}, { class: "browser-default" }) %>
   </div>
 
   <div class="actions">

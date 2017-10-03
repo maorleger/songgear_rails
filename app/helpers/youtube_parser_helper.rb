@@ -9,6 +9,7 @@ module YoutubeParserHelper
     %r(https?://www\.youtube\.com/user/.*?#\w/\w/\w/\w/(.+)\b)
   ]
   def self.video_id(url)
+    return nil if url.blank?
     video_url = url.strip
     FORMATS.find { |format| video_url =~ format } && $1
   end

@@ -2,16 +2,6 @@
 
 require "rails_helper"
 
-# Specs in this file have access to a helper object that includes
-# the YoutubeParserHelper. For example:
-#
-# describe YoutubeParserHelper do
-#   describe "string concat" do
-#     it "concats two strings with spaces" do
-#       expect(helper.concat_strings("this","that")).to eq("this that")
-#     end
-#   end
-# end
 RSpec.describe YoutubeParserHelper, type: :helper do
   describe ".video_id" do
     [
@@ -27,6 +17,11 @@ RSpec.describe YoutubeParserHelper, type: :helper do
       it "correctly parses #{youtube_url}" do
         expect(YoutubeParserHelper.video_id(youtube_url)).to eq("RCUkmUXMd_k")
       end
+
+    end
+
+    it "can handle nil" do
+      expect(YoutubeParserHelper.video_id(nil)).to be_nil
     end
   end
 end

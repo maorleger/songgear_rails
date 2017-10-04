@@ -7,13 +7,7 @@
       <div class="song__youtube">
         <div class="media">
           <div class="media__video">
-            <iframe
-               type="text/html"
-               width="640"
-               height="390"
-               src="https://www.youtube.com/embed/<%= YoutubeParserHelper.video_id(@song.youtube_url) %>"
-               frameborder="0">
-            </iframe>
+            <div id="player" data-video-id=<%= YoutubeParserHelper.video_id(@song.youtube_url) %>></div>
           </div>
         </div>
         <div class="youtube__bookmarks">
@@ -21,9 +15,7 @@
             <div class="card-content">
               <span class="card-title">Bookmarks</span>
               <div class="collection">
-                <a class="collection-item" href="#!"><span class="badge">0:17</span>Begin of</a>
-                <a class="collection-item" href="#!"><span class="badge">1:35</span>Some other part</a>
-                <a class="collection-item" href="#!"><span class="badge">14</span> Alan</a>
+                <%= render partial: "bookmark", collection: @song.bookmarks %>
               </div>
             </div>
             <div class="card-action">

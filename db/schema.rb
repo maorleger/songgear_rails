@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 20171003223742) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.bigint "song_id"
-    t.string "time"
+    t.integer "seconds"
     t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

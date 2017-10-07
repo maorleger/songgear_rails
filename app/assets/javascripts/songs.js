@@ -18,7 +18,7 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {
-	event.target.playVideo();
+	// event.target.playVideo();
 }
 
 function stopVideo() {
@@ -29,4 +29,8 @@ $(document).ready(function() {
 	$("a[data-seek-to]").click(function(e) {
     player.seekTo($(this).data('seek-to'));
 	});
+
+  $("#addBookmark").click(function(e) {
+    debugger;
+  });
 });

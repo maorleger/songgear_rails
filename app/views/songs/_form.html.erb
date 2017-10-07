@@ -29,15 +29,16 @@
   <h3>Bookmarks</h3>
   <%= form.fields_for :bookmarks do |form_bookmark| %>
     <div class="field">
-      <%= form_bookmark.label :seconds %>
-      <%= form_bookmark.number_field :seconds, id: :bookmark_seconds %>
-    </div>
-    <div class="field">
       <%= form_bookmark.label :title %>
       <%= form_bookmark.text_field :title, id: :bookmark_title %>
     </div>
+    <div class="field">
+      <%= form_bookmark.label :seconds %>
+      <%= form_bookmark.number_field :seconds, id: :bookmark_seconds %>
+    </div>
     <hr />
   <% end %>
+
   <div class="actions">
     <%= form.submit %>
   </div>

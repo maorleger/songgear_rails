@@ -31,6 +31,7 @@ $(document).ready(function() {
 	});
 
   $("#addBookmark").click(function(e) {
-    debugger;
+    songId = $(this).data('songId');
+    $.post('/songs/' + songId + '/bookmarks', {'seconds': player.getCurrentTime() }).done(function() { location.reload() });
   });
 });

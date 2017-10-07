@@ -4,6 +4,7 @@
   data-seek-to=<%= bookmark.seconds %>
 >
 <span class="badge">
+  <%= Time.at(bookmark.seconds).utc.strftime("%H:%M:%S") %>
 </span>
 <%= bookmark.title %>
 </a>

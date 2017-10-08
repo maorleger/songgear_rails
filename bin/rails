@@ -8,17 +8,4 @@ rescue LoadError => e
 end
 APP_PATH = File.expand_path("../config/application", __dir__)
 require_relative "../config/boot"
-
-begin
-  require_relative "../script/environment.rb"
-rescue LoadError => e
-  puts """
-  Could not load the environment file. This is fine, but you will need to set the following:
-
-    ENV['GOOGLE_CLIENT_ID'] and ENV['GOOGLE_CLIENT_SECRET']
-
-  In order to get OAuth to work with Google
-  """
-
-end
 require "rails/commands"

@@ -13,9 +13,12 @@
 !/log/.keep
 !/tmp/.keep
 
+/elm-stuff
 /node_modules
 /yarn-error.log
 
 .byebug_history
-
-script/
+/public/packs
+/public/packs-test
+/elm-stuff
+/node_modules

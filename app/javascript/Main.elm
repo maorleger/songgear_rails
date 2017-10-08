@@ -27,7 +27,7 @@ init =
 view : Model -> Html Message
 view model =
     div []
-        []
+        [ text "a" ]
 
 
 

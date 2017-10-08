@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing (..)
 import Types exposing (..)
 import Youtube exposing (youtube)
 
@@ -30,7 +31,24 @@ init =
 
 view : Model -> Html Msg
 view model =
-    youtube model.videoId
+    div [ class "container" ]
+        [ div [ class "row justify-content-center" ]
+            [ h1 []
+                [ text model.title
+                ]
+            ]
+        , div [ class "row" ]
+            [ div [ class "col-8" ]
+                [ youtube model.videoId ]
+            , div [ class "col" ]
+                [ text "here are my bookmarks" ]
+            ]
+        , div [ class "row" ]
+            [ pre []
+                [ text model.note
+                ]
+            ]
+        ]
 
 
 

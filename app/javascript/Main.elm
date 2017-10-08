@@ -1,33 +1,36 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (style)
+import Types exposing (..)
+import Youtube exposing (youtube)
 
 
 -- MODEL
 
 
 type alias Model =
-    {}
+    { title : String
+    , videoId : String
+    , note : String
+    }
 
 
 
 -- INIT
 
 
-init : ( Model, Cmd Message )
+init : ( Model, Cmd Msg )
 init =
-    ( Model, Cmd.none )
+    ( Model "Hey Joe" "9hD44jOQG4Q" "my note here", Cmd.none )
 
 
 
 -- VIEW
 
 
-view : Model -> Html Message
+view : Model -> Html Msg
 view model =
-    div []
-        [ text "a" ]
+    youtube model.videoId
 
 
 
@@ -39,17 +42,10 @@ view model =
 -- ]
 -- [ text "Hello, Elm!" ]
 -- MESSAGE
-
-
-type Message
-    = None
-
-
-
 -- UPDATE
 
 
-update : Message -> Model -> ( Model, Cmd Message )
+update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     ( model, Cmd.none )
 
@@ -58,7 +54,7 @@ update message model =
 -- SUBSCRIPTIONS
 
 
-subscriptions : Model -> Sub Message
+subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
 
@@ -67,7 +63,7 @@ subscriptions model =
 -- MAIN
 
 
-main : Program Never Model Message
+main : Program Never Model Msg
 main =
     Html.program
         { init = init

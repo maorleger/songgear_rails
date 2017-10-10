@@ -4,6 +4,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Types exposing (..)
 import Youtube exposing (view)
+import Request
+import Http
 
 
 -- INIT
@@ -11,7 +13,7 @@ import Youtube exposing (view)
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model "Hey Joe" "9hD44jOQG4Q" "my note here", Cmd.none )
+    ( Model "" "" "" 1, Http.send SongResponse (Request.getSong 1) )
 
 
 
@@ -40,8 +42,18 @@ view model =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update message model =
-    ( model, Cmd.none )
+update msg model =
+    case msg of
+        SongResponse (Err error) ->
+            Debug.crash <| toString error
+
+        SongResponse (Ok song) ->
+            { model
+                | title = song.title
+                , videoId = song.videoId
+                , note = song.note
+            }
+                ! []
 
 
 

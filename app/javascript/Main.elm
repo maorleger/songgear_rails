@@ -13,7 +13,7 @@ import Http
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model "" "" "" 1, Http.send SongResponse (Request.getSong 1) )
+    ( Model 1 Nothing, Http.send SongResponse (Request.getSong 1) )
 
 
 
@@ -24,18 +24,24 @@ view : Model -> Html Msg
 view model =
     let
         videoRow =
-            Youtube.view model
+            Maybe.map
+                Youtube.view
+                model.song
+                |> Maybe.withDefault (div [] [])
+
+        song =
+            Maybe.withDefault (Song "" "" "") model.song
     in
         div [ class "container" ]
             [ div [ class "row justify-content-center" ]
                 [ h1 []
-                    [ text model.title
+                    [ text song.title
                     ]
                 ]
             , videoRow
             , div [ class "row" ]
                 [ pre []
-                    [ text model.note
+                    [ text song.note
                     ]
                 ]
             ]
@@ -48,12 +54,7 @@ update msg model =
             Debug.crash <| toString error
 
         SongResponse (Ok song) ->
-            { model
-                | title = song.title
-                , videoId = song.videoId
-                , note = song.note
-            }
-                ! []
+            { model | song = Just song } ! []
 
 
 

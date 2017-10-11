@@ -9,9 +9,7 @@ type Msg
 
 type alias Model =
     { title : String
-    , videoId : String
-    , note : String
-    , songId : Int
+    , song : Maybe Song
     }
 
 

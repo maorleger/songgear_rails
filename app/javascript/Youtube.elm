@@ -5,11 +5,11 @@ import Html.Attributes exposing (..)
 import Types exposing (..)
 
 
-view : Model -> Html Msg
-view model =
+view : Song -> Html Msg
+view song =
     div [ class "row" ]
         [ div [ class "col-8" ]
-            [ youtube model.videoId ]
+            [ youtube song.videoId ]
         , div [ class "col" ]
             [ text "here are my bookmarks" ]
         ]

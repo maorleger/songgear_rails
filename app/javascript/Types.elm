@@ -15,6 +15,11 @@ type alias Model =
 
 type alias Song =
     { title : String
-    , videoId : String
-    , note : String
+    , videoId : Maybe String
+    , note : Maybe String
+    }
+
+
+type alias Flags =
+    { songId : String
     }

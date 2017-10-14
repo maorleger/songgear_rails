@@ -5,10 +5,9 @@
 import Elm from '../Main';
 
 document.addEventListener('turbolinks:load', () => {
-  console.log('a');
   const target = document.getElementById('elm-main')
 
   if (target) {
-    Elm.Main.embed(target)
+    Elm.Main.embed(target, { songId: target.dataset.songId })
   }
 })

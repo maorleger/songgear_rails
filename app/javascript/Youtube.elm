@@ -7,12 +7,17 @@ import Types exposing (..)
 
 view : Song -> Html Msg
 view song =
-    div [ class "row" ]
-        [ div [ class "col-8" ]
-            [ youtube song.videoId ]
-        , div [ class "col" ]
-            [ text "here are my bookmarks" ]
-        ]
+    case song.videoId of
+        Nothing ->
+            div [] []
+
+        Just videoId ->
+            div [ class "row" ]
+                [ div [ class "col-8" ]
+                    [ youtube videoId ]
+                , div [ class "col" ]
+                    [ text "here are my bookmarks" ]
+                ]
 
 
 youtube : String -> Html Msg

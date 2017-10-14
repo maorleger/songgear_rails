@@ -11,9 +11,13 @@ import Http
 -- INIT
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( Model 1 Nothing, Http.send SongResponse (Request.getSong 1) )
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    let
+        songId =
+            Result.withDefault 0 <| String.toInt flags.songId
+    in
+        ( Model songId Nothing, Http.send SongResponse (Request.getSong songId) )
 
 
 
@@ -30,7 +34,7 @@ view model =
                 |> Maybe.withDefault (div [] [])
 
         song =
-            Maybe.withDefault (Song "" "" "") model.song
+            Maybe.withDefault (Song "" Nothing Nothing) model.song
     in
         div [ class "container" ]
             [ div [ class "row justify-content-center" ]
@@ -41,7 +45,7 @@ view model =
             , videoRow
             , div [ class "row" ]
                 [ pre []
-                    [ text song.note
+                    [ text <| Maybe.withDefault "" song.note
                     ]
                 ]
             ]
@@ -70,9 +74,9 @@ subscriptions model =
 -- MAIN
 
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-    Html.program
+    Html.programWithFlags
         { init = init
         , view = view
         , update = update

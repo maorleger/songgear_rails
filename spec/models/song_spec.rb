@@ -9,19 +9,34 @@ RSpec.describe Song, type: :model do
   # let(:song) { build_stubbed(:song) }
 
   describe "validations" do
-    it "can validate a bad youtube url" do
-      subject.youtube_url = "foo"
-      expect(subject.valid?).to eq(false)
+    describe "youtube_url" do
+      it "can validate a bad youtube url" do
+        subject.youtube_url = "foo"
+        expect(subject.valid?).to eq(false)
+        expect(subject.errors.details).to eq(
+          youtube_url: [{ error: "is not a valid URL" }]
+        )
+      end
+
+      it "can validate a good youtube url" do
+        subject.youtube_url = "https://youtube.com"
+        expect(subject.valid?).to eq(true)
+      end
+
+      it "allows blank" do
+        subject.youtube_url = ""
+        expect(subject.valid?).to eq(true)
+      end
     end
 
-    it "can validate a good youtube url" do
-      subject.youtube_url = "https://youtube.com"
-      expect(subject.valid?).to eq(true)
-    end
-
-    it "allows blank" do
-      subject.youtube_url = ""
-      expect(subject.valid?).to eq(true)
+    describe "title" do
+      it "is required" do
+        subject.title = nil
+        expect(subject.valid?).to eq(false)
+        expect(subject.errors.details).to eq(
+          title: [{ error: :blank }]
+        )
+      end
     end
   end
 

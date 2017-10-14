@@ -8,7 +8,7 @@ type Msg
 
 
 type alias Model =
-    { title : String
+    { songId : Int
     , song : Maybe Song
     }
 

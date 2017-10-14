@@ -3,7 +3,9 @@
 require "rails_helper"
 
 RSpec.describe "Songs API", type: :request do
-  let!(:songs) { create_list(:song, 10) }
+  let(:youtube_video_id) { SecureRandom.hex(8) }
+  let(:youtube_url) { "https://www.youtube.com/watch?v=#{youtube_video_id}" }
+  let!(:songs) { create_list(:song, 10, youtube_url: youtube_url) }
   let(:song_id) { songs.first.id }
 
   describe "GET /api/v1/songs" do
@@ -26,6 +28,7 @@ RSpec.describe "Songs API", type: :request do
       it "returns the song" do
         expect(json).not_to be_empty
         expect(json["id"]).to eq(song_id)
+        expect(json["youtube_video_id"]).to eq(youtube_video_id)
       end
 
       it "returns status code 200" do

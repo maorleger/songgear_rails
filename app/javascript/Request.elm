@@ -25,5 +25,5 @@ songDecoder =
     Decode.map3
         Song
         (Decode.field "title" Decode.string)
-        (Decode.field "video_id" Decode.string)
+        (Decode.field "youtube_video_id" Decode.string)
         (Decode.field "note" Decode.string)

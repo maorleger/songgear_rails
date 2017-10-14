@@ -3,22 +3,45 @@
 require "rails_helper"
 
 RSpec.describe Song, type: :model do
-  let(:song) { build_stubbed(:song) }
+  subject do
+    build_stubbed(:song)
+  end
+  # let(:song) { build_stubbed(:song) }
 
   describe "validations" do
     it "can validate a bad youtube url" do
-      song.youtube_url = "foo"
-      expect(song.valid?).to eq(false)
+      subject.youtube_url = "foo"
+      expect(subject.valid?).to eq(false)
     end
 
     it "can validate a good youtube url" do
-      song.youtube_url = "https://youtube.com"
-      expect(song.valid?).to eq(true)
+      subject.youtube_url = "https://youtube.com"
+      expect(subject.valid?).to eq(true)
     end
 
     it "allows blank" do
-      song.youtube_url = ""
-      expect(song.valid?).to eq(true)
+      subject.youtube_url = ""
+      expect(subject.valid?).to eq(true)
+    end
+  end
+
+  describe "#youtube_video_id" do
+    it "uses the youtube helper parser" do
+      expected_video_id = "9h44jOQG4Q"
+      subject.youtube_url = "https://www.youtube.com/watch?v=#{expected_video_id}"
+      expect(subject.youtube_video_id).to eq(expected_video_id)
+    end
+
+    it "can handle nil" do
+      expect(subject.youtube_video_id).to be_nil
+    end
+  end
+
+  describe "#as_json" do
+    it "includes youtube_video_id" do
+      expected_video_id = "9h44jOQG4Q"
+      subject.youtube_url = "https://www.youtube.com/watch?v=#{expected_video_id}"
+      expect(JSON.load(subject.to_json)).to include("youtube_video_id" => expected_video_id)
     end
   end
 end

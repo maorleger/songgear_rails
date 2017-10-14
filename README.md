@@ -1,24 +1,30 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Ruby version:  2.4.2 (using rbenv)
+Rails version: 5.1.4
 
-Things you may want to cover:
+## Instructions
 
-* Ruby version
+### Dependencies
+Bundler and foreman
 
-* System dependencies
+```
+gem install bundler
+gem install foreman
+```
 
-* Configuration
+### To setup the database
 
-* Database creation
+```
+rails db:setup
+```
 
-* Database initialization
 
-* How to run the test suite
+### To start the app in development mode:
 
-* Services (job queues, cache servers, search engines, etc.)
+```
+./bin/server
+```
 
-* Deployment instructions
 
-* ...
+

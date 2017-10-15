@@ -11,3 +11,13 @@ Song.create!(
   note: "Play in standard tuning\n\nAnd some other note here",
   youtube_url: "https://www.youtube.com/watch?v=9hD44jOQG4Q",
 )
+
+Song.create!(
+  title: "Comfortably Numb",
+  youtube_url: "https://www.youtube.com/watch?v=NCP-y7IE9zI"
+)
+
+Song.create!(
+  title: "November Rain",
+  youtube_url: "https://www.youtube.com/watch?v=xiz928F3GhM"
+)

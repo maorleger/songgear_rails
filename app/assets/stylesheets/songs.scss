@@ -1,3 +1,29 @@
 // Place all the styles related to the Songs controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.SongList {
+  list-style-type: none;
+}
+
+.SongList li {
+  border-bottom: 1px solid #ddd; 
+}
+
+.SongList li:hover {
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.SongList li:last-child { 
+  border-bottom: none; 
+}
+
+.SongList li a {
+  padding: 15px;
+  display: block;
+}
+
+.SongList li a:hover {
+  text-decoration: none;
+}

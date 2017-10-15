@@ -15,9 +15,22 @@ view song =
             div [ class "row" ]
                 [ div [ class "col-8" ]
                     [ youtube videoId ]
-                , div [ class "col" ]
-                    [ text "here are my bookmarks" ]
+                , div
+                    [ class "col" ]
+                    [ bookmarksRenderer song.bookmarks ]
                 ]
+
+
+bookmarksRenderer : List Bookmark -> Html Msg
+bookmarksRenderer bookmarks =
+    let
+        bookmarkRenderer bookmark =
+            div [ class "list-group-item" ] [ text <| bookmark.title ++ toString bookmark.seconds ]
+    in
+        div [ class "card" ]
+            [ ul [ class "list-group list-group-flush" ]
+                (List.map bookmarkRenderer bookmarks)
+            ]
 
 
 youtube : String -> Html Msg

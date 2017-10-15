@@ -17,9 +17,16 @@ type alias Song =
     { title : String
     , videoId : Maybe String
     , note : Maybe String
+    , bookmarks : List Bookmark
     }
 
 
 type alias Flags =
     { songId : String
+    }
+
+
+type alias Bookmark =
+    { seconds : Int
+    , title : String
     }

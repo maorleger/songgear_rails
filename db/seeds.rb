@@ -14,10 +14,10 @@ Song.create!(
 
 Song.create!(
   title: "Comfortably Numb",
-  youtube_url: "https://www.youtube.com/watch?v=NCP-y7IE9zI"
+  youtube_url: "https://www.youtube.com/watch?v=NCP-y7IE9zI",
 )
 
 Song.create!(
   title: "November Rain",
-  youtube_url: "https://www.youtube.com/watch?v=xiz928F3GhM"
+  youtube_url: "https://www.youtube.com/watch?v=xiz928F3GhM",
 )

@@ -8,9 +8,6 @@ import Request
 import Http
 
 
--- INIT
-
-
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
@@ -20,21 +17,16 @@ init flags =
         ( Model songId Nothing, Http.send SongResponse (Request.getSong songId) )
 
 
-
--- VIEW
-
-
 view : Model -> Html Msg
 view model =
     let
         videoRow =
-            Maybe.map
-                Youtube.view
-                model.song
+            Maybe.map Youtube.view model.song
                 |> Maybe.withDefault (div [] [])
 
         song =
-            Maybe.withDefault (Song "" Nothing Nothing) model.song
+            model.song
+                |> Maybe.withDefault (Song "" Nothing Nothing [])
     in
         div [ class "container" ]
             [ div [ class "row justify-content-center" ]
@@ -61,17 +53,9 @@ update msg model =
             { model | song = Just song } ! []
 
 
-
--- SUBSCRIPTIONS
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
-
-
-
--- MAIN
 
 
 main : Program Flags Model Msg

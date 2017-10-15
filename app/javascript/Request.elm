@@ -22,8 +22,13 @@ getSong songId =
 
 songDecoder : Decode.Decoder Song
 songDecoder =
-    Decode.map3
+    Decode.map4
         Song
         (Decode.field "title" Decode.string)
         (Decode.field "youtube_video_id" (Decode.nullable Decode.string))
         (Decode.field "note" (Decode.nullable Decode.string))
+        (Decode.succeed
+            [ Bookmark 25 "My title"
+            , Bookmark 67 "Over a minute"
+            ]
+        )

@@ -1,9 +1,21 @@
 <div class="Songs">
-  <ul class="SongList">
-    <% @songs.each do |s| %>
-      <li class="Song">
-        <%= link_to(s.title, song_path(s.id)) %>
-      </li>
-    <% end %>
-  </ul>
+  <div class="row">
+    <div class="col-8">
+    </div>
+    <div class="col-4">
+      <%= button_to "Add Song", new_song_path, :class => "btn btn-primary float-right", :method => :get %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <ul class="SongList">
+        <% @songs.each do |s| %>
+          <li class="Song">
+            <%= link_to(s.title, song_path(s.id)) %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
 </div>

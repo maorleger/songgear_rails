@@ -13,6 +13,10 @@ class Repository
     model.find_by_id(id)
   end
 
+  def create(params)
+    model.create(params)
+  end
+
   private
-  attr_reader :model
+    attr_reader :model
 end

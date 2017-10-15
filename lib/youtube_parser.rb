@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module YoutubeParserHelper
+module YoutubeParser
   FORMATS = [
     %r(https?://youtu\.be/(.+)),
     %r(https?://www\.youtube\.com/watch\?v=(.*?)(&|#|$)),

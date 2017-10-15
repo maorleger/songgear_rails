@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe YoutubeParserHelper, type: :helper do
+RSpec.describe YoutubeParser do
   describe ".video_id" do
     [
       "http://www.youtube.com/embed/RCUkmUXMd_k?rel=0",
@@ -15,13 +15,13 @@ RSpec.describe YoutubeParserHelper, type: :helper do
       "http://youtu.be/RCUkmUXMd_k",
     ].each do |youtube_url|
       it "correctly parses #{youtube_url}" do
-        expect(YoutubeParserHelper.video_id(youtube_url)).to eq("RCUkmUXMd_k")
+        expect(YoutubeParser.video_id(youtube_url)).to eq("RCUkmUXMd_k")
       end
 
     end
 
     it "can handle nil" do
-      expect(YoutubeParserHelper.video_id(nil)).to be_nil
+      expect(YoutubeParser.video_id(nil)).to be_nil
     end
   end
 end

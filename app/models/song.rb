@@ -9,6 +9,6 @@ class Song < ApplicationRecord
   end
 
   def youtube_video_id
-    YoutubeParserHelper.video_id(youtube_url)
+    YoutubeParser.video_id(youtube_url)
   end
 end

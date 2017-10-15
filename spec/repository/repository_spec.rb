@@ -32,4 +32,14 @@ RSpec.describe Repository do
       expect(actual).to eq(song_two)
     end
   end
+
+  describe "#create" do
+    it "creates the object and returns it" do
+      actual = subject.create(title: "foo", youtube_url: "bar", note: "hello")
+
+      expect(actual.title).to eq("foo")
+      expect(actual.youtube_url).to eq("bar")
+      expect(actual.note).to eq("hello")
+    end
+  end
 end

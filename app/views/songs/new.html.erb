@@ -1,0 +1,24 @@
+<div>
+  <div class="row">
+    <div class="col-8">
+      <%= form_for @song, url: { action: "create" } do |f| %>
+        <div class="form-group">
+          <%= label :song, :title %>
+          <%= f.text_field :title, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= label :song, :youtube_url, "YouTube URL" %>
+          <%= f.text_field :youtube_url, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= label :song, :note %>
+          <%= f.text_field :note, class: 'form-control' %>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      <% end %>
+    </div>
+    <div class="col-4">
+      <img src="/assets/harrys_vertical_small.jpg" />
+    </div>
+  </div>
+</div>

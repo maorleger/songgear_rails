@@ -31,7 +31,7 @@ module Api
         end
 
         def song_params
-          params.permit(:title, :note)
+          params.require(:song).permit(:title, :note, :youtube_url)
         end
     end
   end

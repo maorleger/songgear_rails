@@ -61,7 +61,7 @@ RSpec.describe "Songs API", type: :request do
 
     context "when the request is valid" do
       before do
-        post "/api/v1/songs", params: valid_attributes
+        post "/api/v1/songs", params: { song: valid_attributes }
       end
 
       it "creates a song" do
@@ -86,7 +86,7 @@ RSpec.describe "Songs API", type: :request do
 
     context "when the record exists" do
       before do
-        put "/api/v1/songs/#{song_id}", params: valid_attributes
+        put "/api/v1/songs/#{song_id}", params: { song: valid_attributes }
       end
 
       it "updates the record" do

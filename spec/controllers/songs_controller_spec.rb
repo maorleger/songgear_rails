@@ -36,7 +36,7 @@ RSpec.describe SongsController, type: :controller do
   describe "POST #create" do
     it "creates new song" do
       params = { title: "foo", youtube_url: "bar", note: "all your base are belong to us" }
-      expect_any_instance_of(SongRepository).to receive(:create).with(params.clone).and_return("/")
+      expect_any_instance_of(SongRepository).to receive(:create).with(params.with_indifferent_access).and_return("/")
 
       post :create, params: { song: params.merge!(random_param: "better not see this") }
     end

@@ -34,12 +34,24 @@ RSpec.describe Repository do
   end
 
   describe "#create" do
-    it "creates the object and returns it" do
-      actual = subject.create(title: "foo", youtube_url: "bar", note: "hello")
+    describe "when the object is valid" do
+      it "creates the object and returns it" do
+        actual = subject.create(title: "foo", note: "hello")
 
-      expect(actual.title).to eq("foo")
-      expect(actual.youtube_url).to eq("bar")
-      expect(actual.note).to eq("hello")
+        expect(actual.title).to eq("foo")
+        expect(actual.note).to eq("hello")
+        expect(actual.valid?).to eq(true)
+        expect(actual.persisted?).to eq(true)
+      end
+    end
+
+    describe "when the object is invalid" do
+      it "returns nil and does not save the object" do
+        actual = subject.create(title: nil)
+
+        expect(actual.valid?).to eq(false)
+        expect(actual.persisted?).to eq(false)
+      end
     end
   end
 end

@@ -14,8 +14,12 @@ class SongsController < ApplicationController
   end
 
   def create
-    new_song = repository.create(song_params)
-    redirect_to new_song
+    @song = repository.create(song_params)
+    if @song.valid?
+      redirect_to song_path(@song)
+    else
+      render :new
+    end
   end
 
   private

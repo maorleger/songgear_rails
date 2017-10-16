@@ -2,6 +2,17 @@
   <div class="row">
     <div class="col-8">
       <%= form_for @song, url: { action: "create" } do |f| %>
+        <% if @song.errors.any? %>
+          <div class="alert alert-danger" role="alert">
+            <p>Oh oh, looks like there were errors on the page</p>
+            <ul>
+              <% @song.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
         <div class="form-group">
           <%= label :song, :title %>
           <%= f.text_field :title, class: 'form-control' %>

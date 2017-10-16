@@ -34,11 +34,27 @@ RSpec.describe SongsController, type: :controller do
   end
 
   describe "POST #create" do
-    it "creates new song" do
-      params = { title: "foo", youtube_url: "bar", note: "all your base are belong to us" }
-      expect_any_instance_of(SongRepository).to receive(:create).with(params.with_indifferent_access).and_return("/")
+    let(:song) { instance_double("song") }
+    describe "when song is valid" do
+      it "Redirects to the song path" do
+        params = { title: "foo", youtube_url: "bar", note: "all your base are belong to us" }
+        expect_any_instance_of(SongRepository).to receive(:create).with(params.with_indifferent_access).and_return(song)
+        allow(song).to receive(:valid?).and_return(true)
 
-      post :create, params: { song: params.merge!(random_param: "better not see this") }
+        post :create, params: { song: params.merge!(random_param: "better not see this") }
+        expect(response).to redirect_to(song_path(song))
+      end
+    end
+
+    describe "when validation fails" do
+      it "Renders the same form" do
+        params = { title: "", youtube_url: "bar", note: "all your base are belong to us" }
+        expect_any_instance_of(SongRepository).to receive(:create).with(params.with_indifferent_access).and_return(song)
+        allow(song).to receive(:valid?).and_return(false)
+
+        post :create, params: { song: params }
+        expect(response).to be_success
+      end
     end
   end
 end

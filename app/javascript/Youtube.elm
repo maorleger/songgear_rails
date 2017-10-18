@@ -1,8 +1,21 @@
-port module Youtube exposing (view)
+port module Youtube
+    exposing
+        ( view
+        , loadVideo
+        , seekTo
+        )
 
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (classList, class, id, href)
+import Html.Events exposing (onClick)
+import Html.Keyed as Keyed
 import Types exposing (..)
+
+
+port loadVideo : String -> Cmd msg
+
+
+port seekTo : Int -> Cmd msg
 
 
 view : Song -> Html Msg
@@ -24,17 +37,58 @@ view song =
 bookmarksRenderer : List Bookmark -> Html Msg
 bookmarksRenderer bookmarks =
     let
+        listItemClasses =
+            [ "list-group-item"
+            , "list-group-item-action"
+            , "d-flex"
+            , "justify-content-between"
+            , "bookmarksItem"
+            ]
+                |> toClassList
+
+        listContentClasses =
+            [ "badge"
+            , "badge-dark"
+            , "d-flex"
+            , "align-items-center"
+            ]
+                |> toClassList
+
         bookmarkRenderer bookmark =
-            div [ class "list-group-item" ] [ text <| bookmark.title ++ toString bookmark.seconds ]
+            a
+                [ listItemClasses
+                , onClick <| SeekTo bookmark.seconds
+                ]
+                [ text bookmark.title
+                , span [ listContentClasses ] [ text <| toString bookmark.seconds ]
+                ]
     in
         div [ class "card" ]
-            [ ul [ class "list-group list-group-flush" ]
-                (List.map bookmarkRenderer bookmarks)
+            [ ul
+                [ [ "list-group", "list-group-flush" ]
+                    |> toClassList
+                ]
+              <|
+                []
+                    ++ (List.map bookmarkRenderer bookmarks)
             ]
 
 
 youtube : String -> Html Msg
 youtube videoId =
-    div [ class "embed-responsive embed-responsive-16by9" ]
-        [ div [ id "player" ] []
-        ]
+    let
+        classList =
+            [ "embed-responsive"
+            , "embed-responsive-16by9"
+            ]
+                |> toClassList
+    in
+        Keyed.node "div"
+            [ classList ]
+            [ ( "div", div [ id "player" ] [] )
+            ]
+
+
+toClassList : List String -> Attribute Msg
+toClassList =
+    classList << List.map (flip (,) True)

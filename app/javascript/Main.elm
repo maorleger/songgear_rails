@@ -3,7 +3,7 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Types exposing (..)
-import Youtube exposing (view)
+import Youtube exposing (view, loadVideo)
 import Request
 import Http
 
@@ -50,7 +50,10 @@ update msg model =
             Debug.crash <| toString error
 
         SongResponse (Ok song) ->
-            { model | song = Just song } ! []
+            { model | song = Just song } ! [ Youtube.loadVideo <| Maybe.withDefault "" song.videoId ]
+
+        SeekTo seconds ->
+            model ! [ Youtube.seekTo seconds ]
 
 
 subscriptions : Model -> Sub Msg

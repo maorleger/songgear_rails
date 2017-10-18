@@ -5,6 +5,7 @@ import Http
 
 type Msg
     = SongResponse (Result Http.Error Song)
+    | SeekTo Int
 
 
 type alias Model =

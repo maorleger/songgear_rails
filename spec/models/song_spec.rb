@@ -6,7 +6,8 @@ RSpec.describe Song, type: :model do
   subject do
     build_stubbed(:song)
   end
-  # let(:song) { build_stubbed(:song) }
+
+  it { should have_many(:bookmarks) }
 
   describe "validations" do
     describe "youtube_url" do

@@ -33,13 +33,14 @@ function setupPlayer(videoId) {
   var retryCount = 0;
 
   (function setupPlayerWithRetry() {
-    setTimeout(function() {
+    requestAnimationFrame(function() {
       try {
         player = new YT.Player('player', {
           videoId: videoId,
         });
       } catch (err) {
         if (retryCount < 5) {
+          console.log("retrying YT player");
           retryCount += 1;
           setupPlayerWithRetry();
         } else {
@@ -47,6 +48,6 @@ function setupPlayer(videoId) {
           throw err;
         }
       }
-    }, retryCount * 1000);
+    });
   })();
 }

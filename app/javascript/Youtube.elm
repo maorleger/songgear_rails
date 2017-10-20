@@ -12,6 +12,7 @@ import Html.Attributes exposing (classList, class, id, href)
 import Html.Events exposing (onClick)
 import Html.Keyed as Keyed
 import Types exposing (..)
+import Utilities as U
 
 
 port loadVideo : String -> Cmd msg
@@ -52,13 +53,13 @@ bookmarksRenderer bookmarks =
             , "justify-content-between"
             , "bookmarksItem"
             ]
-                |> toClassList
+                |> U.toClassList
 
         listContentClasses =
             [ "d-flex"
             , "align-items-center"
             ]
-                |> toClassList
+                |> U.toClassList
 
         bookmarkFooter =
             [ div [ class "card-body" ]
@@ -72,14 +73,14 @@ bookmarksRenderer bookmarks =
                 , onClick <| SeekTo bookmark.seconds
                 ]
                 [ text bookmark.title
-                , span [ listContentClasses ] [ text <| toTimeFmt bookmark.seconds ]
+                , span [ listContentClasses ] [ text <| U.toTimeFmt bookmark.seconds ]
                 ]
     in
         div [ class "card" ]
             [ div [ class "card-header" ] [ text "Bookmarks" ]
             , ul
                 [ [ "list-group", "list-group-flush" ]
-                    |> toClassList
+                    |> U.toClassList
                 ]
               <|
                 List.map bookmarkRenderer bookmarks
@@ -94,29 +95,9 @@ youtube videoId =
             [ "embed-responsive"
             , "embed-responsive-16by9"
             ]
-                |> toClassList
+                |> U.toClassList
     in
         Keyed.node "div"
             [ classList ]
             [ ( "div", div [ id "player" ] [] )
             ]
-
-
-toClassList : List String -> Attribute Msg
-toClassList =
-    classList << List.map (flip (,) True)
-
-
-toTimeFmt : Int -> String
-toTimeFmt secs =
-    let
-        minutes =
-            flip (//) 60
-                >> toString
-
-        seconds =
-            flip (%) 60
-                >> toString
-                >> String.padLeft 2 '0'
-    in
-        minutes secs ++ ":" ++ seconds secs

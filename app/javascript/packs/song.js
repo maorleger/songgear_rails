@@ -13,11 +13,7 @@ document.addEventListener('turbolinks:load', () => {
   if (target) {
     var app = Elm.Main.embed(target, { songId: target.dataset.songId });
     app.ports.loadVideo.subscribe(function(videoId) {
-      requestAnimationFrame(function() {
-        player = new YT.Player('player', {
-          videoId: videoId,
-        });
-      });
+      setupPlayer(videoId);
     });
 
     app.ports.seekTo.subscribe(function(seconds) {
@@ -27,3 +23,26 @@ document.addEventListener('turbolinks:load', () => {
     });
   }
 })
+
+function setupPlayer(videoId) {
+  var videoId = videoId;
+  var retryCount = 0;
+
+  (function setupPlayerWithRetry() {
+    setTimeout(function() {
+      try {
+        player = new YT.Player('player', {
+          videoId: videoId,
+        });
+      } catch (err) {
+        if (retryCount < 5) {
+          retryCount += 1;
+          setupPlayerWithRetry();
+        } else {
+          console.log("Unable to instantiate YT player after 5 retries... giving up");
+          throw err;
+        }
+      }
+    }, retryCount * 1000);
+  })();
+}

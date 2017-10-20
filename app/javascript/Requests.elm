@@ -1,4 +1,4 @@
-module Request exposing (getSong)
+module Requests exposing (getSong)
 
 import Types exposing (..)
 import Json.Decode as Decode
@@ -27,8 +27,12 @@ songDecoder =
         (Decode.field "title" Decode.string)
         (Decode.field "youtube_video_id" (Decode.nullable Decode.string))
         (Decode.field "note" (Decode.nullable Decode.string))
-        (Decode.succeed
-            [ Bookmark 25 "My title"
-            , Bookmark 67 "Over a minute"
-            ]
-        )
+        (Decode.field "bookmarks" <| Decode.list bookmarkDecoder)
+
+
+bookmarkDecoder : Decode.Decoder Bookmark
+bookmarkDecoder =
+    Decode.map2
+        Bookmark
+        (Decode.field "name" Decode.string)
+        (Decode.field "seconds" Decode.int)

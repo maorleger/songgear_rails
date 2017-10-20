@@ -4,6 +4,10 @@ FactoryGirl.define do
   factory :song do
     title { Faker::Lorem.word }
 
+    transient do
+      bookmarks_count 0
+    end
+
     factory :song_with_bookmarks do
       transient do
         bookmarks_count 2

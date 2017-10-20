@@ -28,6 +28,6 @@ type alias Flags =
 
 
 type alias Bookmark =
-    { seconds : Int
-    , title : String
+    { title : String
+    , seconds : Int
     }

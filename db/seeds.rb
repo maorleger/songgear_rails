@@ -1,4 +1,4 @@
-[Song].each do |c|
+[Bookmark, Song].each do |c|
   c.destroy_all
 end
 
@@ -12,14 +12,32 @@ hey_joe = Song.create!(
   youtube_url: "https://www.youtube.com/watch?v=9hD44jOQG4Q",
 )
 
-FactoryGirl.create_list(:bookmark, 5, song: hey_joe)
+Bookmark.create!(
+  name: "Start of lesson",
+  seconds: 65,
+  song: hey_joe,
+)
+
+Bookmark.create!(
+  name: "Some other section",
+  seconds: 276,
+  song: hey_joe,
+)
+
+Bookmark.create!(
+  name: "The best section!",
+  seconds: 410,
+  song: hey_joe,
+)
 
 Song.create!(
   title: "Comfortably Numb",
   youtube_url: "https://www.youtube.com/watch?v=NCP-y7IE9zI",
 )
 
-Song.create!(
+november_rain = Song.create!(
   title: "November Rain",
   youtube_url: "https://www.youtube.com/watch?v=xiz928F3GhM",
 )
+
+FactoryGirl.create_list(:bookmark, 15, song: november_rain)

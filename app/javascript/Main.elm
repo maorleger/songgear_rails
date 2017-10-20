@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Types exposing (..)
 import Youtube exposing (view, loadVideo)
-import Request
+import Requests
 import Http
 
 
@@ -14,7 +14,7 @@ init flags =
         songId =
             Result.withDefault 0 <| String.toInt flags.songId
     in
-        ( Model songId Nothing, Http.send SongResponse (Request.getSong songId) )
+        ( Model songId Nothing, Http.send SongResponse (Requests.getSong songId) )
 
 
 view : Model -> Html Msg

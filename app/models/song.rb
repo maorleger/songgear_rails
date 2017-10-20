@@ -6,7 +6,7 @@ class Song < ApplicationRecord
   has_many :bookmarks
 
   def as_json(options = {})
-    super((options || {}).merge(methods: [:youtube_video_id]))
+    super((options || {}).merge(methods: [:youtube_video_id], include: :bookmarks))
   end
 
   def youtube_video_id

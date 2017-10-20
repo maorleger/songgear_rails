@@ -3,17 +3,28 @@
 require "rails_helper"
 
 RSpec.describe "Songs API", type: :request do
+  NUM_BOOKMARKS = 3
+  NUM_SONGS = 10
+
   let(:youtube_video_id) { SecureRandom.hex(8) }
   let(:youtube_url) { "https://www.youtube.com/watch?v=#{youtube_video_id}" }
-  let!(:songs) { create_list(:song, 10, youtube_url: youtube_url) }
-  let(:song_id) { songs.first.id }
+  let!(:songs) {
+    create_list(
+      :song_with_bookmarks,
+      NUM_SONGS,
+      youtube_url: youtube_url,
+      bookmarks_count: NUM_BOOKMARKS
+    )
+  }
+  let(:song) { songs.first }
+  let(:song_id) { song.id }
 
   describe "GET /api/v1/songs" do
     before { get "/api/v1/songs" }
 
     it "returns songs" do
       expect(json).not_to be_empty
-      expect(json.size).to eq(10)
+      expect(json.size).to eq(NUM_SONGS)
     end
 
     it "returns status code 200" do
@@ -25,14 +36,19 @@ RSpec.describe "Songs API", type: :request do
     before { get "/api/v1/songs/#{song_id}" }
 
     context "when the record exists" do
+      it "returns status code 200" do
+        expect(response).to have_http_status(200)
+      end
+
       it "returns the song" do
         expect(json).not_to be_empty
         expect(json["id"]).to eq(song_id)
         expect(json["youtube_video_id"]).to eq(youtube_video_id)
       end
 
-      it "returns status code 200" do
-        expect(response).to have_http_status(200)
+      it "returns the bookmarks of the song" do
+        expect(json["bookmarks"].size).to eq(NUM_BOOKMARKS)
+        expect(json["bookmarks"].to_json).to eq(song.bookmarks.to_json)
       end
     end
 

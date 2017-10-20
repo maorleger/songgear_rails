@@ -47,6 +47,8 @@ end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
+  gem "faker"
+  gem "factory_girl_rails"
   gem "web-console", ">= 3.3.0"
   gem "listen", ">= 3.0.5", "< 3.2"
   gem "spring"
@@ -56,8 +58,6 @@ group :development do
 end
 
 group :test do
-  gem "factory_girl_rails"
-  gem "faker"
   gem "database_cleaner"
   gem "rails-controller-testing"
   gem "shoulda-matchers", "~> 3.1"

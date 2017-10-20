@@ -7,7 +7,7 @@ RSpec.describe Song, type: :model do
     build_stubbed(:song)
   end
 
-  it { should have_many(:bookmarks).dependent(:destroy) }
+  it { should have_many(:bookmarks).dependent(:destroy).order(:seconds) }
 
   describe "validations" do
     describe "youtube_url" do

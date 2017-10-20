@@ -46,10 +46,18 @@ RSpec.describe "Songs API", type: :request do
         expect(json["youtube_video_id"]).to eq(youtube_video_id)
       end
 
-      it "returns the bookmarks of the song" do
-        expect(json["bookmarks"].size).to eq(NUM_BOOKMARKS)
-        expect(json["bookmarks"].to_json).to eq(song.bookmarks.to_json)
+      describe "bookmarks" do
+        it "returns all the bookmarks of the song" do
+          expect(json["bookmarks"].size).to eq(NUM_BOOKMARKS)
+        end
+
+        it "returns the bookmarks in sorted order" do
+          expected_bookmarks = song.bookmarks.sort_by(&:seconds).to_json
+          expect(json["bookmarks"].to_json).to eq(expected_bookmarks)
+        end
+
       end
+
     end
 
     context "when the record does not exist" do

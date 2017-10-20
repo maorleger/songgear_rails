@@ -62,7 +62,8 @@ bookmarksRenderer bookmarks =
                 ]
     in
         div [ class "card" ]
-            [ ul
+            [ div [ class "card-header" ] [ text "Bookmarks" ]
+            , ul
                 [ [ "list-group", "list-group-flush" ]
                     |> toClassList
                 ]
@@ -100,7 +101,7 @@ toTimeFmt secs =
                 >> toString
 
         seconds =
-            flip (//) 60
+            flip (%) 60
                 >> toString
                 >> String.padLeft 2 '0'
     in

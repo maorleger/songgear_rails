@@ -47,9 +47,7 @@ bookmarksRenderer bookmarks =
                 |> toClassList
 
         listContentClasses =
-            [ "badge"
-            , "badge-dark"
-            , "d-flex"
+            [ "d-flex"
             , "align-items-center"
             ]
                 |> toClassList
@@ -60,7 +58,7 @@ bookmarksRenderer bookmarks =
                 , onClick <| SeekTo bookmark.seconds
                 ]
                 [ text bookmark.title
-                , span [ listContentClasses ] [ text <| toString bookmark.seconds ]
+                , span [ listContentClasses ] [ text <| toTimeFmt bookmark.seconds ]
                 ]
     in
         div [ class "card" ]
@@ -92,3 +90,18 @@ youtube videoId =
 toClassList : List String -> Attribute Msg
 toClassList =
     classList << List.map (flip (,) True)
+
+
+toTimeFmt : Int -> String
+toTimeFmt secs =
+    let
+        minutes =
+            flip (//) 60
+                >> toString
+
+        seconds =
+            flip (//) 60
+                >> toString
+                >> String.padLeft 2 '0'
+    in
+        minutes secs ++ ":" ++ seconds secs

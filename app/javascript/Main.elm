@@ -55,10 +55,26 @@ update msg model =
         SeekTo seconds ->
             model ! [ Youtube.seekTo seconds ]
 
+        AddBookmark ->
+            model ! [ Youtube.getYTPlayerTime () ]
+
+        CurrentPlayerTime currentTime ->
+            let
+                newSong =
+                    Maybe.map
+                        (\song ->
+                            { song
+                                | bookmarks = song.bookmarks ++ [ Bookmark "New bookmark" currentTime ]
+                            }
+                        )
+                        model.song
+            in
+                { model | song = newSong } ! []
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Youtube.currentYTPlayerTime CurrentPlayerTime
 
 
 main : Program Flags Model Msg

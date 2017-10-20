@@ -3,6 +3,8 @@ port module Youtube
         ( view
         , loadVideo
         , seekTo
+        , getYTPlayerTime
+        , currentYTPlayerTime
         )
 
 import Html exposing (..)
@@ -16,6 +18,12 @@ port loadVideo : String -> Cmd msg
 
 
 port seekTo : Int -> Cmd msg
+
+
+port getYTPlayerTime : () -> Cmd msg
+
+
+port currentYTPlayerTime : (Int -> msg) -> Sub msg
 
 
 view : Song -> Html Msg
@@ -52,6 +60,12 @@ bookmarksRenderer bookmarks =
             ]
                 |> toClassList
 
+        bookmarkFooter =
+            [ div [ class "card-body" ]
+                [ button [ class "btn btn-link card-link", onClick AddBookmark ] [ text "Add" ]
+                ]
+            ]
+
         bookmarkRenderer bookmark =
             a
                 [ listItemClasses
@@ -68,8 +82,8 @@ bookmarksRenderer bookmarks =
                     |> toClassList
                 ]
               <|
-                []
-                    ++ (List.map bookmarkRenderer bookmarks)
+                List.map bookmarkRenderer bookmarks
+                    ++ bookmarkFooter
             ]
 
 

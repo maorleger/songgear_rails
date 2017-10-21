@@ -30,11 +30,8 @@ port currentYTPlayerTime : (Int -> msg) -> Sub msg
 
 view : Song -> Html Msg
 view song =
-    case Song.videoId song of
-        Nothing ->
-            div [] []
-
-        Just videoId ->
+    let
+        videoRenderer videoId =
             div [ class "row" ]
                 [ div [ class "col-8" ]
                     [ youtube videoId ]
@@ -42,6 +39,10 @@ view song =
                     [ class "col" ]
                     [ Bookmark.view (Song.bookmarks song) AddBookmark SeekTo ]
                 ]
+    in
+        Song.videoId song
+            |> Maybe.map videoRenderer
+            |> Maybe.withDefault (div [] [])
 
 
 youtube : String -> Html msg

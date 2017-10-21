@@ -42,15 +42,11 @@ addBookmarkRequest songId (Bookmark bookmark) =
         postUrl =
             U.serverUrl ++ "songs/" ++ toString songId ++ "/bookmarks"
 
-        bookmarkEncoder x =
+        body =
             Encode.object
                 [ ( "seconds", Encode.int bookmark.seconds )
                 , ( "name", Encode.string bookmark.name )
                 ]
-
-        body =
-            bookmark
-                |> bookmarkEncoder
                 |> Http.jsonBody
     in
         Http.post postUrl body <| Decode.succeed ()

@@ -3,9 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Bookmarks API", type: :request do
-  let!(:song) { create(:song) }
-
   describe "POST /api/v1/songs/:song_id/bookmarks" do
+    let!(:song) { create(:song) }
     let(:name) { "Foobar" }
     let(:seconds) { 65 }
     let(:valid_attributes) {
@@ -15,7 +14,6 @@ RSpec.describe "Bookmarks API", type: :request do
         song: song,
       }
     }
-
     context "when the request is valid" do
       before do
         post "/api/v1/songs/#{song.id}/bookmarks", params: { bookmark: valid_attributes }
@@ -28,6 +26,19 @@ RSpec.describe "Bookmarks API", type: :request do
 
       it "returns status code 201" do
         expect(response).to have_http_status(201)
+      end
+    end
+
+    context "when the request is invalid" do
+      let(:invalid_attributes) {
+        valid_attributes.merge(seconds: -1)
+      }
+      before do
+        post "/api/v1/songs/#{song.id}/bookmarks", params: { bookmark: invalid_attributes }
+      end
+
+      it "returns 422" do
+        expect(response).to have_http_status(422)
       end
     end
   end

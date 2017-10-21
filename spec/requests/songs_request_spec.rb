@@ -96,6 +96,20 @@ RSpec.describe "Songs API", type: :request do
         expect(response).to have_http_status(201)
       end
     end
+
+    context "when the request is invalid" do
+      let(:invalid_attributes) {
+        valid_attributes.merge(title: nil)
+      }
+
+      before do
+        post "/api/v1/songs", params: { song: invalid_attributes }
+      end
+
+      it "returns status code 422" do
+        expect(response).to have_http_status(422)
+      end
+    end
   end
 
   describe "PUT /api/v1/songs/:id" do

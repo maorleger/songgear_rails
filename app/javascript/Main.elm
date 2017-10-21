@@ -8,6 +8,9 @@ import Requests
 import Http
 
 
+-- NOTE: please do not make changes to any elm files, I have a big refactor in the `add-bookmark` branch
+
+
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let

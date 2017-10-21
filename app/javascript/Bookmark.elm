@@ -3,6 +3,7 @@ module Bookmark
         ( Bookmark
         , addBookmarkRequest
         , bookmarkDecoder
+        , init
         , view
         )
 
@@ -15,22 +16,28 @@ import Utilities as U
 import Http
 
 
-type alias Bookmark =
-    { name : String
-    , seconds : Int
-    }
+type Bookmark
+    = Bookmark
+        { name : String
+        , seconds : Int
+        }
+
+
+init : String -> Int -> Bookmark
+init name seconds =
+    Bookmark { name = name, seconds = seconds }
 
 
 bookmarkDecoder : Decode.Decoder Bookmark
 bookmarkDecoder =
     Decode.map2
-        Bookmark
+        init
         (Decode.field "name" Decode.string)
         (Decode.field "seconds" Decode.int)
 
 
 addBookmarkRequest : Int -> Bookmark -> Http.Request ()
-addBookmarkRequest songId bookmark =
+addBookmarkRequest songId (Bookmark bookmark) =
     let
         postUrl =
             "http://localhost:/api/v1/songs/" ++ toString songId ++ "/bookmarks"
@@ -73,7 +80,7 @@ view bookmarks addBookmark seekTo =
                 ]
             ]
 
-        bookmarkRenderer bookmark =
+        bookmarkRenderer (Bookmark bookmark) =
             a
                 [ listItemClasses
                 , onClick <| seekTo bookmark.seconds

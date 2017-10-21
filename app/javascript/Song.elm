@@ -12,7 +12,7 @@ module Song
 
 import Http
 import Json.Decode as Decode
-import Bookmark exposing (Bookmark, bookmarkDecoder)
+import Bookmark exposing (Bookmark)
 
 
 type Song
@@ -25,28 +25,28 @@ type Song
 
 
 videoId : Song -> Maybe String
-videoId (Song struct) =
-    struct.videoId
+videoId (Song song) =
+    song.videoId
 
 
 bookmarks : Song -> List Bookmark
-bookmarks (Song struct) =
-    struct.bookmarks
+bookmarks (Song song) =
+    song.bookmarks
 
 
 title : Song -> String
-title (Song struct) =
-    struct.title
+title (Song song) =
+    song.title
 
 
 note : Song -> Maybe String
-note (Song struct) =
-    struct.note
+note (Song song) =
+    song.note
 
 
 addBookmark : Int -> Song -> Song
-addBookmark time (Song struct) =
-    Song { struct | bookmarks = struct.bookmarks ++ [ Bookmark "New bookmark" time ] }
+addBookmark time (Song song) =
+    Song { song | bookmarks = song.bookmarks ++ [ Bookmark.init "New bookmark" time ] }
 
 
 init : String -> Maybe String -> Maybe String -> List Bookmark -> Song
@@ -76,4 +76,4 @@ songDecoder =
         (Decode.field "title" Decode.string)
         (Decode.field "youtube_video_id" (Decode.nullable Decode.string))
         (Decode.field "note" (Decode.nullable Decode.string))
-        (Decode.field "bookmarks" <| Decode.list bookmarkDecoder)
+        (Decode.field "bookmarks" <| Decode.list Bookmark.bookmarkDecoder)

@@ -66,7 +66,13 @@ update msg model =
                         (Song.addBookmark currentTime)
                         model.song
             in
-                { model | song = newSong } ! [ Http.send AddBookmarkResponse (Bookmark.addBookmarkRequest model.songId (Bookmark "New bookmark" currentTime)) ]
+                { model | song = newSong }
+                    ! [ Http.send AddBookmarkResponse
+                            (Bookmark.addBookmarkRequest
+                                model.songId
+                                (Bookmark.init "New bookmark" currentTime)
+                            )
+                      ]
 
         AddBookmarkResponse response ->
             Debug.crash <| "Not yet implemented" ++ toString response

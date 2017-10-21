@@ -1,10 +1,10 @@
 port module Youtube
     exposing
-        ( view
+        ( currentYTPlayerTime
+        , getYTPlayerTime
         , loadVideo
         , seekTo
-        , getYTPlayerTime
-        , currentYTPlayerTime
+        , view
         )
 
 import Html exposing (..)

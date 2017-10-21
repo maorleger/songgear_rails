@@ -1,7 +1,7 @@
 module Types exposing (..)
 
-import Http
 import Song exposing (Song)
+import Http
 
 
 type Msg

@@ -2,11 +2,11 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Types exposing (..)
 import Youtube exposing (view, loadVideo)
 import Http
 import Song exposing (Song)
 import Bookmark exposing (Bookmark)
+import Types exposing (..)
 
 
 -- NOTE: please do not make changes to any elm files, I have a big refactor in the `add-bookmark` branch
@@ -73,10 +73,10 @@ update msg model =
                         )
                         model.song
             in
-                { model | song = newSong } ! [ Http.send AddBookmarkResponse (Bookmark.updateBookmarks model.songId (Bookmark "New bookmark" currentTime)) ]
+                { model | song = newSong } ! [ Http.send AddBookmarkResponse (Bookmark.addBookmarkRequest model.songId (Bookmark "New bookmark" currentTime)) ]
 
         AddBookmarkResponse response ->
-            Debug.crash <| toString response
+            Debug.crash <| "Not yet implemented" ++ toString response
 
 
 subscriptions : Model -> Sub Msg

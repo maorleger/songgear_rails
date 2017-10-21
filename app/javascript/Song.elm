@@ -2,7 +2,7 @@ module Song exposing (Song, getSong)
 
 import Http
 import Json.Decode as Decode
-import Bookmark exposing (..)
+import Bookmark exposing (Bookmark, bookmarkDecoder)
 
 
 type alias Song =

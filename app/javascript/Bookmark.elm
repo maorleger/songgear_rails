@@ -40,7 +40,7 @@ addBookmarkRequest : Int -> Bookmark -> Http.Request ()
 addBookmarkRequest songId (Bookmark bookmark) =
     let
         postUrl =
-            "http://localhost:/api/v1/songs/" ++ toString songId ++ "/bookmarks"
+            U.serverUrl ++ "songs/" ++ toString songId ++ "/bookmarks"
 
         bookmarkEncoder x =
             Encode.object

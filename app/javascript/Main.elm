@@ -74,8 +74,11 @@ update msg model =
                             )
                       ]
 
-        AddBookmarkResponse response ->
-            Debug.crash <| "Not yet implemented" ++ toString response
+        AddBookmarkResponse (Err error) ->
+            Debug.crash <| toString error
+
+        AddBookmarkResponse (Ok _) ->
+            model ! []
 
 
 subscriptions : Model -> Sub Msg

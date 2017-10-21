@@ -13,6 +13,7 @@ module Song
 import Http
 import Json.Decode as Decode
 import Bookmark exposing (Bookmark)
+import Utilities as U
 
 
 type Song
@@ -61,7 +62,7 @@ fetchSong songId =
         , headers =
             [ Http.header "Content-Type" "application/json"
             ]
-        , url = "http://localhost:5000/api/v1/songs/" ++ toString songId
+        , url = U.serverUrl ++ "songs/" ++ toString songId
         , body = Http.emptyBody
         , expect = Http.expectJson songDecoder
         , timeout = Nothing

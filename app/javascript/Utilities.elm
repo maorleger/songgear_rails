@@ -7,3 +7,8 @@ import Html exposing (Attribute)
 toClassList : List String -> Attribute msg
 toClassList =
     classList << List.map (flip (,) True)
+
+
+serverUrl : String
+serverUrl =
+    "http://localhost:5000/api/v1/"

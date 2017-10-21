@@ -4,9 +4,9 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Types exposing (..)
 import Youtube exposing (view, loadVideo)
-import Requests
 import Http
-import Song
+import Song exposing (Song)
+import Bookmark exposing (Bookmark)
 
 
 -- NOTE: please do not make changes to any elm files, I have a big refactor in the `add-bookmark` branch
@@ -73,7 +73,7 @@ update msg model =
                         )
                         model.song
             in
-                { model | song = newSong } ! [ Http.send AddBookmarkResponse (Requests.updateBookmarks model.songId (Bookmark "New bookmark" currentTime)) ]
+                { model | song = newSong } ! [ Http.send AddBookmarkResponse (Bookmark.updateBookmarks model.songId (Bookmark "New bookmark" currentTime)) ]
 
         AddBookmarkResponse response ->
             Debug.crash <| toString response

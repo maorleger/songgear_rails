@@ -1,6 +1,7 @@
 module Types exposing (..)
 
 import Http
+import Song exposing (Song)
 
 
 type Msg
@@ -17,20 +18,6 @@ type alias Model =
     }
 
 
-type alias Song =
-    { title : String
-    , videoId : Maybe String
-    , note : Maybe String
-    , bookmarks : List Bookmark
-    }
-
-
 type alias Flags =
     { songId : String
-    }
-
-
-type alias Bookmark =
-    { name : String
-    , seconds : Int
     }

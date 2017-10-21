@@ -1,8 +1,16 @@
-module Song exposing (..)
+module Song exposing (Song, getSong)
 
 import Http
 import Json.Decode as Decode
-import Types exposing (..)
+import Bookmark exposing (..)
+
+
+type alias Song =
+    { title : String
+    , videoId : Maybe String
+    , note : Maybe String
+    , bookmarks : List Bookmark
+    }
 
 
 getSong : Int -> Http.Request Song
@@ -28,11 +36,3 @@ songDecoder =
         (Decode.field "youtube_video_id" (Decode.nullable Decode.string))
         (Decode.field "note" (Decode.nullable Decode.string))
         (Decode.field "bookmarks" <| Decode.list bookmarkDecoder)
-
-
-bookmarkDecoder : Decode.Decoder Bookmark
-bookmarkDecoder =
-    Decode.map2
-        Bookmark
-        (Decode.field "name" Decode.string)
-        (Decode.field "seconds" Decode.int)

@@ -1,15 +1,26 @@
-module Requests exposing (updateBookmarks)
+module Bookmark
+    exposing
+        ( Bookmark
+        , updateBookmarks
+        )
 
-import Types exposing (..)
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Http
 
 
--- TODO: instead of requests module make a Song module and Bookmark module. Consider making them opaque even
--- TODO: do something with the response
--- TODO: implement the API endpoint
--- TODO: handle errors more gracefully (story in PT)
+type alias Bookmark =
+    { name : String
+    , seconds : Int
+    }
+
+
+bookmarkDecoder : Decode.Decoder Bookmark
+bookmarkDecoder =
+    Decode.map2
+        Bookmark
+        (Decode.field "name" Decode.string)
+        (Decode.field "seconds" Decode.int)
 
 
 updateBookmarks : Int -> Bookmark -> Http.Request ()

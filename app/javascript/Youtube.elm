@@ -11,6 +11,8 @@ import Html exposing (..)
 import Html.Attributes exposing (classList, class, id, href)
 import Html.Events exposing (onClick)
 import Html.Keyed as Keyed
+import Song exposing (Song)
+import Bookmark exposing (Bookmark)
 import Types exposing (..)
 import Utilities as U
 

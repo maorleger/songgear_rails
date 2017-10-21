@@ -1,18 +1,19 @@
 port module Youtube
     exposing
-        ( view
+        ( currentYTPlayerTime
+        , getYTPlayerTime
         , loadVideo
         , seekTo
-        , getYTPlayerTime
-        , currentYTPlayerTime
+        , view
         )
 
 import Html exposing (..)
 import Html.Attributes exposing (classList, class, id, href)
-import Html.Events exposing (onClick)
 import Html.Keyed as Keyed
-import Types exposing (..)
+import Song exposing (Song)
+import Bookmark exposing (Bookmark)
 import Utilities as U
+import Types exposing (..)
 
 
 port loadVideo : String -> Cmd msg
@@ -29,7 +30,7 @@ port currentYTPlayerTime : (Int -> msg) -> Sub msg
 
 view : Song -> Html Msg
 view song =
-    case song.videoId of
+    case Song.videoId song of
         Nothing ->
             div [] []
 
@@ -39,56 +40,11 @@ view song =
                     [ youtube videoId ]
                 , div
                     [ class "col" ]
-                    [ bookmarksRenderer song.bookmarks ]
+                    [ Bookmark.view (Song.bookmarks song) AddBookmark SeekTo ]
                 ]
 
 
-bookmarksRenderer : List Bookmark -> Html Msg
-bookmarksRenderer bookmarks =
-    let
-        listItemClasses =
-            [ "list-group-item"
-            , "list-group-item-action"
-            , "d-flex"
-            , "justify-content-between"
-            , "bookmarksItem"
-            ]
-                |> U.toClassList
-
-        listContentClasses =
-            [ "d-flex"
-            , "align-items-center"
-            ]
-                |> U.toClassList
-
-        bookmarkFooter =
-            [ div [ class "card-body" ]
-                [ button [ class "btn btn-link card-link", onClick AddBookmark ] [ text "Add" ]
-                ]
-            ]
-
-        bookmarkRenderer bookmark =
-            a
-                [ listItemClasses
-                , onClick <| SeekTo bookmark.seconds
-                ]
-                [ text bookmark.title
-                , span [ listContentClasses ] [ text <| U.toTimeFmt bookmark.seconds ]
-                ]
-    in
-        div [ class "card" ]
-            [ div [ class "card-header" ] [ text "Bookmarks" ]
-            , ul
-                [ [ "list-group", "list-group-flush" ]
-                    |> U.toClassList
-                ]
-              <|
-                List.map bookmarkRenderer bookmarks
-                    ++ bookmarkFooter
-            ]
-
-
-youtube : String -> Html Msg
+youtube : String -> Html msg
 youtube videoId =
     let
         classList =

@@ -31,6 +31,7 @@ document.addEventListener('turbolinks:load', () => {
 function setupPlayer(videoId) {
   var videoId = videoId;
   var retryCount = 0;
+  var numRetries = 10;
 
   (function setupPlayerWithRetry() {
     requestAnimationFrame(function() {
@@ -39,12 +40,12 @@ function setupPlayer(videoId) {
           videoId: videoId,
         });
       } catch (err) {
-        if (retryCount < 5) {
+        if (retryCount < numRetries) {
           console.log("retrying YT player");
           retryCount += 1;
           setupPlayerWithRetry();
         } else {
-          console.log("Unable to instantiate YT player after 5 retries... giving up");
+          console.log("Unable to instantiate YT player after " + numRetries + " retries... giving up");
           throw err;
         }
       }

@@ -1,5 +1,6 @@
 module Types exposing (..)
 
+import Song exposing (Song)
 import Http
 
 
@@ -8,6 +9,7 @@ type Msg
     | SeekTo Int
     | AddBookmark
     | CurrentPlayerTime Int
+    | AddBookmarkResponse (Result Http.Error ())
 
 
 type alias Model =
@@ -16,20 +18,6 @@ type alias Model =
     }
 
 
-type alias Song =
-    { title : String
-    , videoId : Maybe String
-    , note : Maybe String
-    , bookmarks : List Bookmark
-    }
-
-
 type alias Flags =
     { songId : String
-    }
-
-
-type alias Bookmark =
-    { title : String
-    , seconds : Int
     }

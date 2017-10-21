@@ -6,6 +6,7 @@ import Types exposing (..)
 import Youtube exposing (view, loadVideo)
 import Requests
 import Http
+import Song
 
 
 -- NOTE: please do not make changes to any elm files, I have a big refactor in the `add-bookmark` branch
@@ -17,7 +18,7 @@ init flags =
         songId =
             Result.withDefault 0 <| String.toInt flags.songId
     in
-        ( Model songId Nothing, Http.send SongResponse (Requests.getSong songId) )
+        ( Model songId Nothing, Http.send SongResponse (Song.getSong songId) )
 
 
 view : Model -> Html Msg
@@ -72,7 +73,10 @@ update msg model =
                         )
                         model.song
             in
-                { model | song = newSong } ! []
+                { model | song = newSong } ! [ Http.send AddBookmarkResponse (Requests.updateBookmarks model.songId (Bookmark "New bookmark" currentTime)) ]
+
+        AddBookmarkResponse response ->
+            Debug.crash <| toString response
 
 
 subscriptions : Model -> Sub Msg

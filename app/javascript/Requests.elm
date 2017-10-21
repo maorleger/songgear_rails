@@ -1,38 +1,32 @@
-module Requests exposing (getSong)
+module Requests exposing (updateBookmarks)
 
 import Types exposing (..)
 import Json.Decode as Decode
+import Json.Encode as Encode
 import Http
 
 
-getSong : Int -> Http.Request Song
-getSong songId =
-    Http.request
-        { method = "GET"
-        , headers =
-            [ Http.header "Content-Type" "application/json"
-            ]
-        , url = "http://localhost:5000/api/v1/songs/" ++ toString songId
-        , body = Http.emptyBody
-        , expect = Http.expectJson songDecoder
-        , timeout = Nothing
-        , withCredentials = False
-        }
+-- TODO: instead of requests module make a Song module and Bookmark module. Consider making them opaque even
+-- TODO: do something with the response
+-- TODO: implement the API endpoint
+-- TODO: handle errors more gracefully (story in PT)
 
 
-songDecoder : Decode.Decoder Song
-songDecoder =
-    Decode.map4
-        Song
-        (Decode.field "title" Decode.string)
-        (Decode.field "youtube_video_id" (Decode.nullable Decode.string))
-        (Decode.field "note" (Decode.nullable Decode.string))
-        (Decode.field "bookmarks" <| Decode.list bookmarkDecoder)
+updateBookmarks : Int -> Bookmark -> Http.Request ()
+updateBookmarks songId bookmark =
+    let
+        postUrl =
+            "http://localhost:/api/v1/songs/" ++ toString songId ++ "/bookmarks"
 
+        bookmarkEncoder x =
+            Encode.object
+                [ ( "seconds", Encode.int bookmark.seconds )
+                , ( "name", Encode.string bookmark.name )
+                ]
 
-bookmarkDecoder : Decode.Decoder Bookmark
-bookmarkDecoder =
-    Decode.map2
-        Bookmark
-        (Decode.field "name" Decode.string)
-        (Decode.field "seconds" Decode.int)
+        body =
+            bookmark
+                |> bookmarkEncoder
+                |> Http.jsonBody
+    in
+        Http.post postUrl body <| Decode.succeed ()

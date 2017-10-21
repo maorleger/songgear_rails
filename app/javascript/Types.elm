@@ -8,6 +8,7 @@ type Msg
     | SeekTo Int
     | AddBookmark
     | CurrentPlayerTime Int
+    | AddBookmarkResponse (Result Http.Error ())
 
 
 type alias Model =
@@ -30,6 +31,6 @@ type alias Flags =
 
 
 type alias Bookmark =
-    { title : String
+    { name : String
     , seconds : Int
     }

@@ -72,7 +72,7 @@ bookmarksRenderer bookmarks =
                 [ listItemClasses
                 , onClick <| SeekTo bookmark.seconds
                 ]
-                [ text bookmark.title
+                [ text bookmark.name
                 , span [ listContentClasses ] [ text <| U.toTimeFmt bookmark.seconds ]
                 ]
     in

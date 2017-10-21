@@ -1,20 +1,61 @@
-module Song exposing (Song, getSong)
+module Song
+    exposing
+        ( Song
+        , addBookmark
+        , bookmarks
+        , fetchSong
+        , init
+        , note
+        , title
+        , videoId
+        )
 
 import Http
 import Json.Decode as Decode
 import Bookmark exposing (Bookmark, bookmarkDecoder)
 
 
-type alias Song =
-    { title : String
-    , videoId : Maybe String
-    , note : Maybe String
-    , bookmarks : List Bookmark
-    }
+type Song
+    = Song
+        { title : String
+        , videoId : Maybe String
+        , note : Maybe String
+        , bookmarks : List Bookmark
+        }
 
 
-getSong : Int -> Http.Request Song
-getSong songId =
+videoId : Song -> Maybe String
+videoId (Song struct) =
+    struct.videoId
+
+
+bookmarks : Song -> List Bookmark
+bookmarks (Song struct) =
+    struct.bookmarks
+
+
+title : Song -> String
+title (Song struct) =
+    struct.title
+
+
+note : Song -> Maybe String
+note (Song struct) =
+    struct.note
+
+
+addBookmark : Int -> Song -> Song
+addBookmark time (Song struct) =
+    Song { struct | bookmarks = struct.bookmarks ++ [ Bookmark "New bookmark" time ] }
+
+
+init : String -> Maybe String -> Maybe String -> List Bookmark -> Song
+init title videoId note bookmarks =
+    Song { title = title, videoId = videoId, note = note, bookmarks = bookmarks }
+
+
+fetchSong : Int -> Http.Request Song
+fetchSong songId =
     Http.request
         { method = "GET"
         , headers =
@@ -31,7 +72,7 @@ getSong songId =
 songDecoder : Decode.Decoder Song
 songDecoder =
     Decode.map4
-        Song
+        init
         (Decode.field "title" Decode.string)
         (Decode.field "youtube_video_id" (Decode.nullable Decode.string))
         (Decode.field "note" (Decode.nullable Decode.string))

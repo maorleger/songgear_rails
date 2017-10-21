@@ -15,7 +15,7 @@ init flags =
         songId =
             Result.withDefault 0 <| String.toInt flags.songId
     in
-        ( Model songId Nothing, Http.send SongResponse (Song.getSong songId) )
+        ( Model songId Nothing, Http.send SongResponse (Song.fetchSong songId) )
 
 
 view : Model -> Html Msg
@@ -27,18 +27,18 @@ view model =
 
         song =
             model.song
-                |> Maybe.withDefault (Song "" Nothing Nothing [])
+                |> Maybe.withDefault (Song.init "" Nothing Nothing [])
     in
         div [ class "container" ]
             [ div [ class "row justify-content-center" ]
                 [ h1 []
-                    [ text song.title
+                    [ text <| Song.title song
                     ]
                 ]
             , videoRow
             , div [ class "row" ]
                 [ pre []
-                    [ text <| Maybe.withDefault "" song.note
+                    [ text <| Maybe.withDefault "" <| Song.note song
                     ]
                 ]
             ]
@@ -51,7 +51,7 @@ update msg model =
             Debug.crash <| toString error
 
         SongResponse (Ok song) ->
-            { model | song = Just song } ! [ Youtube.loadVideo <| Maybe.withDefault "" song.videoId ]
+            { model | song = Just song } ! [ Youtube.loadVideo <| Maybe.withDefault "" (Song.videoId song) ]
 
         SeekTo seconds ->
             model ! [ Youtube.seekTo seconds ]
@@ -63,11 +63,7 @@ update msg model =
             let
                 newSong =
                     Maybe.map
-                        (\song ->
-                            { song
-                                | bookmarks = song.bookmarks ++ [ Bookmark "New bookmark" currentTime ]
-                            }
-                        )
+                        (Song.addBookmark currentTime)
                         model.song
             in
                 { model | song = newSong } ! [ Http.send AddBookmarkResponse (Bookmark.addBookmarkRequest model.songId (Bookmark "New bookmark" currentTime)) ]

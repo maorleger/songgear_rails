@@ -30,7 +30,7 @@ port currentYTPlayerTime : (Int -> msg) -> Sub msg
 
 view : Song -> Html Msg
 view song =
-    case song.videoId of
+    case Song.videoId song of
         Nothing ->
             div [] []
 
@@ -40,7 +40,7 @@ view song =
                     [ youtube videoId ]
                 , div
                     [ class "col" ]
-                    [ Bookmark.view song.bookmarks AddBookmark SeekTo ]
+                    [ Bookmark.view (Song.bookmarks song) AddBookmark SeekTo ]
                 ]
 
 

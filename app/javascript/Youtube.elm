@@ -33,10 +33,10 @@ view song =
     let
         videoRenderer videoId =
             div [ class "row" ]
-                [ div [ class "col-8" ]
+                [ div [ class "col-md-8" ]
                     [ youtube videoId ]
                 , div
-                    [ class "col" ]
+                    [ class "col-md-4" ]
                     [ Bookmark.view (Song.bookmarks song) AddBookmark SeekTo ]
                 ]
     in

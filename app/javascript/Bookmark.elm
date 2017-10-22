@@ -55,34 +55,34 @@ addBookmarkRequest songId (Bookmark bookmark) =
 view : List Bookmark -> msg -> (Int -> msg) -> Html msg
 view bookmarks addBookmark seekTo =
     let
-        listItemClasses =
-            [ "list-group-item"
-            , "list-group-item-action"
-            , "d-flex"
-            , "justify-content-between"
-            , "bookmarksItem"
-            ]
-                |> U.toClassList
-
-        listContentClasses =
-            [ "d-flex"
-            , "align-items-center"
-            ]
-                |> U.toClassList
-
         bookmarkFooter =
             [ div [ class "card-body" ]
                 [ button [ class "btn btn-link card-link", onClick addBookmark ] [ text "Add" ]
                 ]
             ]
 
-        bookmarkRenderer (Bookmark bookmark) =
-            a
-                [ listItemClasses
-                , onClick <| seekTo bookmark.seconds
+        editButton bookmark =
+            a [] [ i [ class "edit-button fa fa-edit fa-lg" ] [] ]
+
+        seekToButton bookmark =
+            a [ onClick <| seekTo bookmark.seconds ] [ i [ class "seek-to-button fa fa-bullseye fa-lg" ] [] ]
+
+        rowOne bookmark =
+            div [ class "bookmark-actions-row" ]
+                [ seekToButton bookmark
+                , span [ class "bookmark-name" ] [ text bookmark.name ]
+                , editButton bookmark
                 ]
-                [ text bookmark.name
-                , span [ listContentClasses ] [ text <| toTimeFmt bookmark.seconds ]
+
+        rowTwo bookmark =
+            div [ class "bookmark-details-row" ]
+                [ span [ class "bookmark-timestamp" ] [ text <| toTimeFmt bookmark.seconds ]
+                ]
+
+        bookmarkRenderer (Bookmark bookmark) =
+            span [ class "list-group-item bookmark-row" ]
+                [ rowOne bookmark
+                , rowTwo bookmark
                 ]
     in
         div [ class "card" ]

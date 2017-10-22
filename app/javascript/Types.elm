@@ -8,6 +8,7 @@ type Msg
     = SongResponse (Result Http.Error Song)
     | SeekTo Int
     | AddBookmark
+    | EditBookmark (Maybe Int)
     | CurrentPlayerTime Int
     | AddBookmarkResponse (Result Http.Error ())
 

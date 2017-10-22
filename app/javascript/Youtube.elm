@@ -37,7 +37,7 @@ view song =
                     [ youtube videoId ]
                 , div
                     [ class "col-md-4" ]
-                    [ Bookmark.view (Song.bookmarks song) AddBookmark SeekTo ]
+                    [ Bookmark.view (Song.bookmarks song) AddBookmark SeekTo EditBookmark ]
                 ]
     in
         Song.videoId song

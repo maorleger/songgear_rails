@@ -2,6 +2,7 @@ module Bookmark
     exposing
         ( Bookmark
         , addBookmarkRequest
+        , edit
         , bookmarkDecoder
         , init
         , view
@@ -18,20 +19,40 @@ import Http
 
 type Bookmark
     = Bookmark
-        { name : String
+        { id : Maybe Int
+        , name : String
         , seconds : Int
+        , isEditing : Bool
         }
 
 
-init : String -> Int -> Bookmark
-init name seconds =
-    Bookmark { name = name, seconds = seconds }
+init : Maybe Int -> String -> Int -> Bookmark
+init id name seconds =
+    Bookmark { id = id, name = name, seconds = seconds, isEditing = False }
+
+
+edit : Int -> List Bookmark -> List Bookmark
+edit id bookmarks =
+    bookmarks
+        |> List.map
+            (\(Bookmark bookmark) ->
+                case bookmark.id of
+                    Nothing ->
+                        Bookmark bookmark
+
+                    Just bookmarkId ->
+                        if bookmarkId == id then
+                            Bookmark { bookmark | isEditing = True }
+                        else
+                            Bookmark bookmark
+            )
 
 
 bookmarkDecoder : Decode.Decoder Bookmark
 bookmarkDecoder =
-    Decode.map2
+    Decode.map3
         init
+        (Decode.field "id" (Decode.maybe Decode.int))
         (Decode.field "name" Decode.string)
         (Decode.field "seconds" Decode.int)
 
@@ -52,8 +73,54 @@ addBookmarkRequest songId (Bookmark bookmark) =
         Http.post postUrl body <| Decode.succeed ()
 
 
-view : List Bookmark -> msg -> (Int -> msg) -> Html msg
-view bookmarks addBookmark seekTo =
+readonlyView : Bookmark -> (Int -> msg) -> (Maybe Int -> msg) -> Html msg
+readonlyView bookmark seekTo editBookmark =
+    let
+        editButton bookmark =
+            a [ onClick <| editBookmark bookmark.id ] [ i [ class "edit-button clickable-icon fa fa-edit fa-lg" ] [] ]
+
+        seekToButton bookmark =
+            a [ onClick <| seekTo bookmark.seconds ] [ i [ class "seek-to-button clickable-icon fa fa-bullseye fa-lg" ] [] ]
+
+        removeButton bookmark =
+            a [] [ i [ class "remove-button clickable-icon fa fa-times-circle-o fa-lg" ] [] ]
+
+        rowOne (Bookmark bookmark) =
+            div [ class "bookmark-actions-row" ]
+                [ seekToButton bookmark
+                , span [ class "bookmark-name" ] [ text bookmark.name ]
+                , editButton bookmark
+                , removeButton bookmark
+                ]
+
+        rowTwo (Bookmark bookmark) =
+            div [ class "bookmark-details-row" ]
+                [ span [ class "bookmark-timestamp" ] [ text <| toTimeFmt bookmark.seconds ]
+                ]
+    in
+        span [ class "list-group-item bookmark-row" ]
+            [ rowOne bookmark
+            , rowTwo bookmark
+            ]
+
+
+editView : Bookmark -> Html msg
+editView bookmark =
+    let
+        saveButton bookmark =
+            a [] [ i [ class "save-button clickable-icon fa fa-check-circle-o fa-lg" ] [] ]
+
+        rowOne (Bookmark bookmark) =
+            div [ class "bookmark-actions-row" ]
+                [ input [ class "form-control", value bookmark.name ] []
+                , saveButton bookmark
+                ]
+    in
+        span [ class "list-group-item bookmark-row" ] [ rowOne bookmark ]
+
+
+view : List Bookmark -> msg -> (Int -> msg) -> (Maybe Int -> msg) -> Html msg
+view bookmarks addBookmark seekTo editBookmark =
     let
         bookmarkFooter =
             [ div [ class "card-body" ]
@@ -61,29 +128,11 @@ view bookmarks addBookmark seekTo =
                 ]
             ]
 
-        editButton bookmark =
-            a [] [ i [ class "edit-button fa fa-edit fa-lg" ] [] ]
-
-        seekToButton bookmark =
-            a [ onClick <| seekTo bookmark.seconds ] [ i [ class "seek-to-button fa fa-bullseye fa-lg" ] [] ]
-
-        rowOne bookmark =
-            div [ class "bookmark-actions-row" ]
-                [ seekToButton bookmark
-                , span [ class "bookmark-name" ] [ text bookmark.name ]
-                , editButton bookmark
-                ]
-
-        rowTwo bookmark =
-            div [ class "bookmark-details-row" ]
-                [ span [ class "bookmark-timestamp" ] [ text <| toTimeFmt bookmark.seconds ]
-                ]
-
         bookmarkRenderer (Bookmark bookmark) =
-            span [ class "list-group-item bookmark-row" ]
-                [ rowOne bookmark
-                , rowTwo bookmark
-                ]
+            if bookmark.isEditing then
+                editView (Bookmark bookmark)
+            else
+                readonlyView (Bookmark bookmark) seekTo editBookmark
     in
         div [ class "card" ]
             [ div [ class "card-header" ] [ text "Bookmarks" ]

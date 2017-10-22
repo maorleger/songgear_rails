@@ -59,6 +59,18 @@ update msg model =
         AddBookmark ->
             model ! [ Youtube.getYTPlayerTime () ]
 
+        EditBookmark id ->
+            let
+                newSong =
+                    case ( id, model.song ) of
+                        ( Just songId, Just song ) ->
+                            Just <| Song.editBookmark songId song
+
+                        _ ->
+                            model.song
+            in
+                { model | song = newSong } ! []
+
         CurrentPlayerTime currentTime ->
             let
                 newSong =
@@ -70,7 +82,7 @@ update msg model =
                     ! [ Http.send AddBookmarkResponse
                             (Bookmark.addBookmarkRequest
                                 model.songId
-                                (Bookmark.init "New bookmark" currentTime)
+                                (Bookmark.init Nothing "New bookmark" currentTime)
                             )
                       ]
 

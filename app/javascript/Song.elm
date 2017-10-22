@@ -2,6 +2,7 @@ module Song
     exposing
         ( Song
         , addBookmark
+        , editBookmark
         , bookmarks
         , fetchSong
         , init
@@ -47,7 +48,17 @@ note (Song song) =
 
 addBookmark : Int -> Song -> Song
 addBookmark time (Song song) =
-    Song { song | bookmarks = song.bookmarks ++ [ Bookmark.init "New bookmark" time ] }
+    Song { song | bookmarks = song.bookmarks ++ [ Bookmark.init Nothing "New bookmark" time ] }
+
+
+editBookmark : Int -> Song -> Song
+editBookmark bookmarkId (Song song) =
+    let
+        newBookmarks =
+            bookmarks (Song song)
+                |> Bookmark.edit bookmarkId
+    in
+        Song { song | bookmarks = newBookmarks }
 
 
 init : String -> Maybe String -> Maybe String -> List Bookmark -> Song

@@ -101,12 +101,9 @@ toTimeFmt : Int -> String
 toTimeFmt secs =
     let
         minutes =
-            flip (//) 60
-                >> toString
+            secs // 60 |> toString
 
         seconds =
-            flip (%) 60
-                >> toString
-                >> String.padLeft 2 '0'
+            secs % 60 |> toString |> String.padLeft 2 '0'
     in
-        minutes secs ++ ":" ++ seconds secs
+        minutes ++ ":" ++ seconds

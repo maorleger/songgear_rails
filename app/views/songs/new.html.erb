@@ -1,6 +1,6 @@
 <div>
   <div class="row">
-    <div class="col-8">
+    <div class="col-12">
       <%= form_for @song, url: { action: "create" } do |f| %>
         <% if @song.errors.any? %>
           <div class="alert alert-danger" role="alert">
@@ -27,9 +27,6 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       <% end %>
-    </div>
-    <div class="col-4">
-      <img src="/assets/harrys_vertical_small.jpg" />
     </div>
   </div>
 </div>

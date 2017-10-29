@@ -38,6 +38,7 @@ function setupPlayer(videoId) {
       try {
         player = new YT.Player('player', {
           videoId: videoId,
+          playerVars: { 'playsinline': 1 },
         });
       } catch (err) {
         if (retryCount < numRetries) {

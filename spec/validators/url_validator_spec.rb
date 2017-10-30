@@ -38,4 +38,12 @@ RSpec.describe "UrlValidator" do
       end
     end
   end
+
+  describe "when the url cant be parsed" do
+    it "should not be valid" do
+      allow(URI).to receive(:parse).and_raise(URI::InvalidURIError)
+      subject.url = "foobar"
+      expect(subject).not_to be_valid
+    end
+  end
 end

@@ -33,6 +33,14 @@ RSpec.describe SongsController, type: :controller do
     end
   end
 
+  describe "GET #new" do
+    it "sets the song to a new object" do
+      get :new
+      expect(assigns(:song)).not_to be_nil
+      expect(assigns(:song).new_record?).to eq(true)
+    end
+  end
+
   describe "POST #create" do
     let(:song) { instance_double("song") }
     describe "when song is valid" do

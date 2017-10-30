@@ -86,6 +86,6 @@ songDecoder =
     Decode.map4
         init
         (Decode.field "title" Decode.string)
-        (Decode.field "youtube_video_id" (Decode.nullable Decode.string))
+        (Decode.field "youtubeVideoId" (Decode.nullable Decode.string))
         (Decode.field "note" (Decode.nullable Decode.string))
         (Decode.field "bookmarks" <| Decode.list Bookmark.bookmarkDecoder)

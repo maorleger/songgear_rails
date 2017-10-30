@@ -36,7 +36,7 @@ RSpec.describe SongsController, type: :controller do
   describe "POST #create" do
     let(:song) { instance_double("song") }
     describe "when song is valid" do
-      it "Redirects to the song path" do
+      it "creates new song" do
         params = { title: "foo", youtube_url: "bar", note: "all your base are belong to us" }
         expect_any_instance_of(SongRepository).to receive(:create).with(params.with_indifferent_access).and_return(song)
         allow(song).to receive(:valid?).and_return(true)
@@ -47,7 +47,7 @@ RSpec.describe SongsController, type: :controller do
     end
 
     describe "when validation fails" do
-      it "Renders the same form" do
+      it "does not create a new song" do
         params = { title: "", youtube_url: "bar", note: "all your base are belong to us" }
         expect_any_instance_of(SongRepository).to receive(:create).with(params.with_indifferent_access).and_return(song)
         allow(song).to receive(:valid?).and_return(false)

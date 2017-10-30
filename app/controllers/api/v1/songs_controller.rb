@@ -2,21 +2,18 @@
 
 module Api
   module V1
-    class SongsController < ApplicationController
+    class SongsController < ApiController
       before_action :set_song, only: [:show, :update]
 
       def index
-        songs = Song.all
-        json_response(songs)
+        @songs = Song.all
       end
+
+      def show; end
 
       def create
         @song = Song.create!(song_params)
         json_response(@song, :created)
-      end
-
-      def show
-        json_response(@song)
       end
 
       def update

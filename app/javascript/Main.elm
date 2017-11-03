@@ -62,12 +62,7 @@ update msg model =
         EditBookmark id ->
             let
                 newSong =
-                    case ( id, model.song ) of
-                        ( Just songId, Just song ) ->
-                            Just <| Song.editBookmark songId song
-
-                        _ ->
-                            model.song
+                    Maybe.map (Song.editBookmark id) model.song
             in
                 { model | song = newSong } ! []
 
@@ -82,14 +77,14 @@ update msg model =
                     ! [ Http.send AddBookmarkResponse
                             (Bookmark.addBookmarkRequest
                                 model.songId
-                                (Bookmark.init Nothing "New bookmark" currentTime)
+                                (Bookmark.init 0 "New bookmark" currentTime)
                             )
                       ]
 
         AddBookmarkResponse (Err error) ->
             Debug.crash <| toString error
 
-        AddBookmarkResponse (Ok _) ->
+        AddBookmarkResponse (Ok bookmark) ->
             model ! []
 
 

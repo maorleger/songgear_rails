@@ -48,7 +48,7 @@ note (Song song) =
 
 addBookmark : Int -> Song -> Song
 addBookmark time (Song song) =
-    Song { song | bookmarks = song.bookmarks ++ [ Bookmark.init Nothing "New bookmark" time ] }
+    Song { song | bookmarks = song.bookmarks ++ [ Bookmark.init 0 "New bookmark" time ] }
 
 
 editBookmark : Int -> Song -> Song

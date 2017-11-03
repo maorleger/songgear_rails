@@ -19,14 +19,14 @@ import Http
 
 type Bookmark
     = Bookmark
-        { id : Maybe Int
+        { id : Int
         , name : String
         , seconds : Int
         , isEditing : Bool
         }
 
 
-init : Maybe Int -> String -> Int -> Bookmark
+init : Int -> String -> Int -> Bookmark
 init id name seconds =
     Bookmark { id = id, name = name, seconds = seconds, isEditing = False }
 
@@ -36,15 +36,10 @@ edit id bookmarks =
     bookmarks
         |> List.map
             (\(Bookmark bookmark) ->
-                case bookmark.id of
-                    Nothing ->
-                        Bookmark bookmark
-
-                    Just bookmarkId ->
-                        if bookmarkId == id then
-                            Bookmark { bookmark | isEditing = True }
-                        else
-                            Bookmark bookmark
+                if bookmark.id == id then
+                    Bookmark { bookmark | isEditing = True }
+                else
+                    Bookmark bookmark
             )
 
 
@@ -52,12 +47,12 @@ bookmarkDecoder : Decode.Decoder Bookmark
 bookmarkDecoder =
     Decode.map3
         init
-        (Decode.field "id" (Decode.maybe Decode.int))
+        (Decode.field "id" Decode.int)
         (Decode.field "name" Decode.string)
         (Decode.field "seconds" Decode.int)
 
 
-addBookmarkRequest : Int -> Bookmark -> Http.Request ()
+addBookmarkRequest : Int -> Bookmark -> Http.Request Bookmark
 addBookmarkRequest songId (Bookmark bookmark) =
     let
         postUrl =
@@ -70,10 +65,10 @@ addBookmarkRequest songId (Bookmark bookmark) =
                 ]
                 |> Http.jsonBody
     in
-        Http.post postUrl body <| Decode.succeed ()
+        Http.post postUrl body bookmarkDecoder
 
 
-readonlyView : Bookmark -> (Int -> msg) -> (Maybe Int -> msg) -> Html msg
+readonlyView : Bookmark -> (Int -> msg) -> (Int -> msg) -> Html msg
 readonlyView bookmark seekTo editBookmark =
     let
         editButton bookmark =
@@ -119,7 +114,7 @@ editView bookmark =
         span [ class "list-group-item bookmark-row" ] [ rowOne bookmark ]
 
 
-view : List Bookmark -> msg -> (Int -> msg) -> (Maybe Int -> msg) -> Html msg
+view : List Bookmark -> msg -> (Int -> msg) -> (Int -> msg) -> Html msg
 view bookmarks addBookmark seekTo editBookmark =
     let
         bookmarkFooter =

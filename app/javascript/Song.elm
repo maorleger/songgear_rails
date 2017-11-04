@@ -37,9 +37,12 @@ bookmarks (Song song) =
     song.bookmarks
 
 
-setBookmarks : (List Bookmark -> List Bookmark) -> Song -> Song
-setBookmarks f (Song song) =
-    Song { song | bookmarks = f song.bookmarks }
+setBookmarks : (List Bookmark -> List Bookmark) -> Maybe Song -> Maybe Song
+setBookmarks f =
+    Maybe.map
+        (\(Song song) ->
+            Song { song | bookmarks = f song.bookmarks }
+        )
 
 
 title : Song -> String

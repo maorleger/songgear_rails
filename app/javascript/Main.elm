@@ -62,7 +62,7 @@ update msg model =
         EditBookmark id ->
             let
                 newSong =
-                    Maybe.map (Song.setBookmarks <| Bookmark.edit id) model.song
+                    Song.setBookmarks (Bookmark.edit id) model.song
             in
                 { model | song = newSong } ! []
 
@@ -90,14 +90,14 @@ update msg model =
                     Maybe.map Song.bookmarks model.song |> Maybe.withDefault []
 
                 newSong =
-                    Maybe.map (Song.setBookmarks <| Bookmark.updateBookmarkFromResponse responseBookmark 0) model.song
+                    Song.setBookmarks (Bookmark.updateBookmarkFromResponse responseBookmark 0) model.song
             in
                 { model | song = newSong } ! []
 
         SetBookmarkName newName ->
             let
                 newSong =
-                    Maybe.map (Song.setBookmarks <| Bookmark.setActiveBookmarkName newName) model.song
+                    Song.setBookmarks (Bookmark.setActiveBookmarkName newName) model.song
 
                 -- working towards an idea of an active bookmark
             in
@@ -112,7 +112,12 @@ update msg model =
         SaveBookmarkResponse (Ok responseBookmark) ->
             let
                 newSong =
-                    Maybe.map (Song.setBookmarks <| Bookmark.updateBookmarkFromResponse responseBookmark (Bookmark.id responseBookmark)) model.song
+                    Song.setBookmarks
+                        (Bookmark.updateBookmarkFromResponse
+                            responseBookmark
+                            (Bookmark.id responseBookmark)
+                        )
+                        model.song
             in
                 { model | song = newSong } ! []
 

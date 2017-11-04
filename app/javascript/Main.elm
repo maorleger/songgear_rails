@@ -98,8 +98,16 @@ update msg model =
             let
                 newSong =
                     Maybe.map (Song.setBookmarks <| Bookmark.setActiveBookmarkName newName) model.song
+
+                -- working towards an idea of an active bookmark
             in
                 { model | song = newSong } ! []
+
+        SaveBookmark bookmark ->
+            model ! [ Http.send SaveBookmarkResponse <| Bookmark.saveBookmarkRequest model.songId bookmark ]
+
+        SaveBookmarkResponse resp ->
+            Debug.crash <| toString resp
 
 
 subscriptions : Model -> Sub Msg

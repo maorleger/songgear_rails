@@ -2,6 +2,7 @@ module Bookmark
     exposing
         ( Bookmark
         , addBookmarkRequest
+        , saveBookmarkRequest
         , updateBookmarkFromResponse
         , setActiveBookmarkName
         , edit
@@ -91,6 +92,11 @@ isEditing (Bookmark bookmark) =
     bookmark.isEditing
 
 
+name : Bookmark -> String
+name (Bookmark bookmark) =
+    bookmark.name
+
+
 bookmarkDecoder : Decode.Decoder Bookmark
 bookmarkDecoder =
     Decode.map3
@@ -114,6 +120,25 @@ addBookmarkRequest songId (Bookmark bookmark) =
                 |> Http.jsonBody
     in
         Http.post postUrl body bookmarkDecoder
+
+
+saveBookmarkRequest : Int -> Bookmark -> Http.Request Bookmark
+saveBookmarkRequest songId bookmark =
+    let
+        bookmarkId =
+            toString <| id bookmark
+    in
+        Http.request
+            { method = "PUT"
+            , headers =
+                [ Http.header "Content-Type" "application/json"
+                ]
+            , url = U.serverUrl ++ "songs/" ++ toString songId ++ "/bookmarks/" ++ bookmarkId
+            , body = Http.emptyBody
+            , expect = Http.expectJson bookmarkDecoder
+            , timeout = Nothing
+            , withCredentials = False
+            }
 
 
 readonlyView : Bookmark -> (Int -> msg) -> (Int -> msg) -> Html msg
@@ -147,23 +172,23 @@ readonlyView bookmark seekTo editBookmark =
             ]
 
 
-editView : Bookmark -> (String -> msg) -> Html msg
-editView bookmark setBookmarkName =
+editView : Bookmark -> (String -> msg) -> (Bookmark -> msg) -> Html msg
+editView bookmark setBookmarkName saveBookmark =
     let
         saveButton bookmark =
-            a [] [ i [ class "save-button clickable-icon fa fa-check-circle-o fa-lg" ] [] ]
+            a [] [ i [ class "save-button clickable-icon fa fa-check-circle-o fa-lg", onClick <| saveBookmark bookmark ] [] ]
 
-        rowOne (Bookmark bookmark) =
+        rowOne bookmark =
             div [ class "bookmark-actions-row" ]
-                [ input [ class "form-control", value bookmark.name, onInput setBookmarkName ] []
+                [ input [ class "form-control", value <| name bookmark, onInput setBookmarkName ] []
                 , saveButton bookmark
                 ]
     in
         span [ class "list-group-item bookmark-row" ] [ rowOne bookmark ]
 
 
-view : List Bookmark -> msg -> (Int -> msg) -> (Int -> msg) -> (String -> msg) -> Html msg
-view bookmarks addBookmark seekTo editBookmark setBookmarkName =
+view : List Bookmark -> msg -> (Int -> msg) -> (Int -> msg) -> (String -> msg) -> (Bookmark -> msg) -> Html msg
+view bookmarks addBookmark seekTo editBookmark setBookmarkName saveBookmark =
     let
         bookmarkFooter =
             [ div [ class "card-body" ]
@@ -173,7 +198,7 @@ view bookmarks addBookmark seekTo editBookmark setBookmarkName =
 
         bookmarkRenderer bookmark =
             if isEditing bookmark then
-                editView bookmark setBookmarkName
+                editView bookmark setBookmarkName saveBookmark
             else
                 readonlyView bookmark seekTo editBookmark
     in

@@ -2,12 +2,12 @@ module Bookmark
     exposing
         ( Bookmark
         , BookmarkEvents
-        , addBookmarkRequest
-        , saveBookmarkRequest
-        , updateBookmarkFromResponse
-        , setActiveBookmarkName
+        , addRequest
+        , updateRequest
+        , handleUpdateResponse
+        , updateName
         , edit
-        , bookmarkDecoder
+        , decoder
         , init
         , view
         , id
@@ -52,37 +52,41 @@ edit id =
             Bookmark { bookmark | isEditing = True }
     in
         List.map (\(Bookmark bookmark) -> Bookmark { bookmark | isEditing = False })
-            >> updateBookmark updaterFn id
+            >> update updaterFn id
 
 
-updateBookmarkFromResponse : Bookmark -> Int -> List Bookmark -> List Bookmark
-updateBookmarkFromResponse responseBookmark id =
+handleUpdateResponse : Bookmark -> Int -> List Bookmark -> List Bookmark
+handleUpdateResponse responseBookmark id =
     let
         updaterFn bookmark =
             responseBookmark
     in
-        updateBookmark updaterFn id
+        update updaterFn id
 
 
-setActiveBookmarkName : String -> List Bookmark -> List Bookmark
-setActiveBookmarkName newName bookmarks =
+activeBookmark : List Bookmark -> Maybe Bookmark
+activeBookmark =
+    List.head << List.filter isEditing
+
+
+
+-- TODO: there's an abstraction here, I just havent found it yet... maybe more operations on an editing bookmark?
+
+
+updateName : String -> List Bookmark -> List Bookmark
+updateName newName bookmarks =
     let
         updaterFn (Bookmark bookmark) =
             Bookmark { bookmark | name = newName }
-
-        activeBookmark =
-            Maybe.map id << List.head << List.filter isEditing
     in
-        case activeBookmark bookmarks of
-            Nothing ->
-                bookmarks
-
-            Just id ->
-                updateBookmark updaterFn id bookmarks
+        activeBookmark bookmarks
+            |> Maybe.map id
+            |> Maybe.map (\id -> update updaterFn id bookmarks)
+            |> Maybe.withDefault bookmarks
 
 
-updateBookmark : (Bookmark -> Bookmark) -> Int -> List Bookmark -> List Bookmark
-updateBookmark f bookmarkId bookmarks =
+update : (Bookmark -> Bookmark) -> Int -> List Bookmark -> List Bookmark
+update f bookmarkId bookmarks =
     bookmarks
         |> List.map
             (\bookmark ->
@@ -108,8 +112,8 @@ name (Bookmark bookmark) =
     bookmark.name
 
 
-bookmarkDecoder : Decode.Decoder Bookmark
-bookmarkDecoder =
+decoder : Decode.Decoder Bookmark
+decoder =
     Decode.map3
         init
         (Decode.field "id" Decode.int)
@@ -117,8 +121,8 @@ bookmarkDecoder =
         (Decode.field "seconds" Decode.int)
 
 
-addBookmarkRequest : Int -> Bookmark -> Http.Request Bookmark
-addBookmarkRequest songId (Bookmark bookmark) =
+addRequest : Int -> Bookmark -> Http.Request Bookmark
+addRequest songId (Bookmark bookmark) =
     let
         postUrl =
             U.serverUrl ++ "songs/" ++ toString songId ++ "/bookmarks"
@@ -130,11 +134,11 @@ addBookmarkRequest songId (Bookmark bookmark) =
                 ]
                 |> Http.jsonBody
     in
-        Http.post postUrl body bookmarkDecoder
+        Http.post postUrl body decoder
 
 
-saveBookmarkRequest : Int -> Bookmark -> Http.Request Bookmark
-saveBookmarkRequest songId (Bookmark bookmark) =
+updateRequest : Int -> Bookmark -> Http.Request Bookmark
+updateRequest songId (Bookmark bookmark) =
     let
         bookmarkId =
             toString <| bookmark.id
@@ -158,7 +162,7 @@ saveBookmarkRequest songId (Bookmark bookmark) =
                 ]
             , url = U.serverUrl ++ "songs/" ++ toString songId ++ "/bookmarks/" ++ bookmarkId
             , body = body
-            , expect = Http.expectJson bookmarkDecoder
+            , expect = Http.expectJson decoder
             , timeout = Nothing
             , withCredentials = False
             }

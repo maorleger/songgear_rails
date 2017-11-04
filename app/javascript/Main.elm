@@ -75,7 +75,7 @@ update msg model =
             in
                 { model | song = newSong }
                     ! [ Http.send AddBookmarkResponse
-                            (Bookmark.addBookmarkRequest
+                            (Bookmark.addRequest
                                 model.songId
                                 (Bookmark.init 0 "New bookmark" currentTime)
                             )
@@ -90,21 +90,21 @@ update msg model =
                     Maybe.map Song.bookmarks model.song |> Maybe.withDefault []
 
                 newSong =
-                    Song.setBookmarks (Bookmark.updateBookmarkFromResponse responseBookmark 0) model.song
+                    Song.setBookmarks (Bookmark.handleUpdateResponse responseBookmark 0) model.song
             in
                 { model | song = newSong } ! []
 
         SetBookmarkName newName ->
             let
                 newSong =
-                    Song.setBookmarks (Bookmark.setActiveBookmarkName newName) model.song
+                    Song.setBookmarks (Bookmark.updateName newName) model.song
 
                 -- working towards an idea of an active bookmark
             in
                 { model | song = newSong } ! []
 
         SaveBookmark bookmark ->
-            model ! [ Http.send SaveBookmarkResponse <| Bookmark.saveBookmarkRequest model.songId bookmark ]
+            model ! [ Http.send SaveBookmarkResponse <| Bookmark.updateRequest model.songId bookmark ]
 
         SaveBookmarkResponse (Err error) ->
             Debug.crash <| toString error
@@ -113,7 +113,7 @@ update msg model =
             let
                 newSong =
                     Song.setBookmarks
-                        (Bookmark.updateBookmarkFromResponse
+                        (Bookmark.handleUpdateResponse
                             responseBookmark
                             (Bookmark.id responseBookmark)
                         )

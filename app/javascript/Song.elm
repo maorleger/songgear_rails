@@ -97,4 +97,4 @@ songDecoder =
         (Decode.field "title" Decode.string)
         (Decode.field "youtubeVideoId" (Decode.nullable Decode.string))
         (Decode.field "note" (Decode.nullable Decode.string))
-        (Decode.field "bookmarks" <| Decode.list Bookmark.bookmarkDecoder)
+        (Decode.field "bookmarks" <| Decode.list Bookmark.decoder)

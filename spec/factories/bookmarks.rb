@@ -4,5 +4,6 @@ FactoryGirl.define do
   factory :bookmark do
     name { Faker::Music.instrument }
     seconds { Faker::Number.between(1, 120) }
+    association :song
   end
 end

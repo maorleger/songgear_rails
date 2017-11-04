@@ -9,6 +9,7 @@ module Bookmark
         , bookmarkDecoder
         , init
         , view
+        , id
         )
 
 import Json.Decode as Decode
@@ -123,10 +124,22 @@ addBookmarkRequest songId (Bookmark bookmark) =
 
 
 saveBookmarkRequest : Int -> Bookmark -> Http.Request Bookmark
-saveBookmarkRequest songId bookmark =
+saveBookmarkRequest songId (Bookmark bookmark) =
     let
         bookmarkId =
-            toString <| id bookmark
+            toString <| bookmark.id
+
+        bookmarkEncoder =
+            Encode.object
+                [ ( "seconds", Encode.int bookmark.seconds )
+                , ( "name", Encode.string bookmark.name )
+                ]
+
+        body =
+            Encode.object
+                [ ( "bookmark", bookmarkEncoder )
+                ]
+                |> Http.jsonBody
     in
         Http.request
             { method = "PUT"
@@ -134,7 +147,7 @@ saveBookmarkRequest songId bookmark =
                 [ Http.header "Content-Type" "application/json"
                 ]
             , url = U.serverUrl ++ "songs/" ++ toString songId ++ "/bookmarks/" ++ bookmarkId
-            , body = Http.emptyBody
+            , body = body
             , expect = Http.expectJson bookmarkDecoder
             , timeout = Nothing
             , withCredentials = False

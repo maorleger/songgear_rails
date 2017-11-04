@@ -9,6 +9,13 @@ module Api
         json_response(@bookmark, :created)
       end
 
+      def update
+        @song = Song.find(params[:song_id])
+        @bookmark = @song.bookmarks.find(params[:id])
+        @bookmark.update!(bookmark_params)
+        json_response(@bookmark)
+      end
+
       private
 
         def bookmark_params

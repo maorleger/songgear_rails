@@ -106,8 +106,15 @@ update msg model =
         SaveBookmark bookmark ->
             model ! [ Http.send SaveBookmarkResponse <| Bookmark.saveBookmarkRequest model.songId bookmark ]
 
-        SaveBookmarkResponse resp ->
-            Debug.crash <| toString resp
+        SaveBookmarkResponse (Err error) ->
+            Debug.crash <| toString error
+
+        SaveBookmarkResponse (Ok responseBookmark) ->
+            let
+                newSong =
+                    Maybe.map (Song.setBookmarks <| Bookmark.updateBookmarkFromResponse responseBookmark (Bookmark.id responseBookmark)) model.song
+            in
+                { model | song = newSong } ! []
 
 
 subscriptions : Model -> Sub Msg

@@ -31,13 +31,21 @@ port currentYTPlayerTime : (Int -> msg) -> Sub msg
 view : Song -> Html Msg
 view song =
     let
+        bookmarkEvents =
+            { addBookmark = AddBookmark
+            , seekTo = SeekTo
+            , editBookmark = EditBookmark
+            , setBookmarkName = SetBookmarkName
+            , saveBookmark = SaveBookmark
+            }
+
         videoRenderer videoId =
             div [ class "row" ]
                 [ div [ class "col-md-8" ]
                     [ youtube videoId ]
                 , div
                     [ class "col-md-4" ]
-                    [ Bookmark.view (Song.bookmarks song) AddBookmark SeekTo EditBookmark SetBookmarkName SaveBookmark ]
+                    [ Bookmark.view (Song.bookmarks song) bookmarkEvents ]
                 ]
     in
         Song.videoId song

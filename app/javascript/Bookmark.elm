@@ -1,6 +1,7 @@
 module Bookmark
     exposing
         ( Bookmark
+        , BookmarkEvents
         , addBookmarkRequest
         , saveBookmarkRequest
         , updateBookmarkFromResponse
@@ -28,6 +29,15 @@ type Bookmark
         , seconds : Int
         , isEditing : Bool
         }
+
+
+type alias BookmarkEvents msg =
+    { addBookmark : msg
+    , seekTo : Int -> msg
+    , editBookmark : Int -> msg
+    , setBookmarkName : String -> msg
+    , saveBookmark : Bookmark -> msg
+    }
 
 
 init : Int -> String -> Int -> Bookmark
@@ -154,14 +164,14 @@ saveBookmarkRequest songId (Bookmark bookmark) =
             }
 
 
-readonlyView : Bookmark -> (Int -> msg) -> (Int -> msg) -> Html msg
-readonlyView bookmark seekTo editBookmark =
+readonlyView : Bookmark -> BookmarkEvents msg -> Html msg
+readonlyView bookmark events =
     let
         editButton bookmark =
-            a [ onClick <| editBookmark bookmark.id ] [ i [ class "edit-button clickable-icon fa fa-edit fa-lg" ] [] ]
+            a [ onClick <| events.editBookmark bookmark.id ] [ i [ class "edit-button clickable-icon fa fa-edit fa-lg" ] [] ]
 
         seekToButton bookmark =
-            a [ onClick <| seekTo bookmark.seconds ] [ i [ class "seek-to-button clickable-icon fa fa-bullseye fa-lg" ] [] ]
+            a [ onClick <| events.seekTo bookmark.seconds ] [ i [ class "seek-to-button clickable-icon fa fa-bullseye fa-lg" ] [] ]
 
         removeButton bookmark =
             a [] [ i [ class "remove-button clickable-icon fa fa-times-circle-o fa-lg" ] [] ]
@@ -185,35 +195,35 @@ readonlyView bookmark seekTo editBookmark =
             ]
 
 
-editView : Bookmark -> (String -> msg) -> (Bookmark -> msg) -> Html msg
-editView bookmark setBookmarkName saveBookmark =
+editView : Bookmark -> BookmarkEvents msg -> Html msg
+editView bookmark events =
     let
         saveButton bookmark =
-            a [] [ i [ class "save-button clickable-icon fa fa-check-circle-o fa-lg", onClick <| saveBookmark bookmark ] [] ]
+            a [] [ i [ class "save-button clickable-icon fa fa-check-circle-o fa-lg", onClick <| events.saveBookmark bookmark ] [] ]
 
         rowOne bookmark =
             div [ class "bookmark-actions-row" ]
-                [ input [ class "form-control", value <| name bookmark, onInput setBookmarkName ] []
+                [ input [ class "form-control", value <| name bookmark, onInput events.setBookmarkName ] []
                 , saveButton bookmark
                 ]
     in
         span [ class "list-group-item bookmark-row" ] [ rowOne bookmark ]
 
 
-view : List Bookmark -> msg -> (Int -> msg) -> (Int -> msg) -> (String -> msg) -> (Bookmark -> msg) -> Html msg
-view bookmarks addBookmark seekTo editBookmark setBookmarkName saveBookmark =
+view : List Bookmark -> BookmarkEvents msg -> Html msg
+view bookmarks events =
     let
         bookmarkFooter =
             [ div [ class "card-body" ]
-                [ button [ class "btn btn-link card-link", onClick addBookmark ] [ text "Add" ]
+                [ button [ class "btn btn-link card-link", onClick events.addBookmark ] [ text "Add" ]
                 ]
             ]
 
         bookmarkRenderer bookmark =
             if isEditing bookmark then
-                editView bookmark setBookmarkName saveBookmark
+                editView bookmark events
             else
-                readonlyView bookmark seekTo editBookmark
+                readonlyView bookmark events
     in
         div [ class "card" ]
             [ div [ class "card-header" ] [ text "Bookmarks" ]

@@ -2,6 +2,8 @@ module Bookmark
     exposing
         ( Bookmark
         , addBookmarkRequest
+        , updateBookmarkFromResponse
+        , setActiveBookmarkName
         , edit
         , bookmarkDecoder
         , init
@@ -12,7 +14,7 @@ import Json.Decode as Decode
 import Json.Encode as Encode
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 import Utilities as U
 import Http
 
@@ -32,15 +34,61 @@ init id name seconds =
 
 
 edit : Int -> List Bookmark -> List Bookmark
-edit id bookmarks =
+edit id =
+    let
+        updaterFn (Bookmark bookmark) =
+            Bookmark { bookmark | isEditing = True }
+    in
+        List.map (\(Bookmark bookmark) -> Bookmark { bookmark | isEditing = False })
+            >> updateBookmark updaterFn id
+
+
+updateBookmarkFromResponse : Bookmark -> Int -> List Bookmark -> List Bookmark
+updateBookmarkFromResponse responseBookmark id =
+    let
+        updaterFn bookmark =
+            responseBookmark
+    in
+        updateBookmark updaterFn id
+
+
+setActiveBookmarkName : String -> List Bookmark -> List Bookmark
+setActiveBookmarkName newName bookmarks =
+    let
+        updaterFn (Bookmark bookmark) =
+            Bookmark { bookmark | name = newName }
+
+        activeBookmark =
+            Maybe.map id << List.head << List.filter isEditing
+    in
+        case activeBookmark bookmarks of
+            Nothing ->
+                bookmarks
+
+            Just id ->
+                updateBookmark updaterFn id bookmarks
+
+
+updateBookmark : (Bookmark -> Bookmark) -> Int -> List Bookmark -> List Bookmark
+updateBookmark f bookmarkId bookmarks =
     bookmarks
         |> List.map
-            (\(Bookmark bookmark) ->
-                if bookmark.id == id then
-                    Bookmark { bookmark | isEditing = True }
+            (\bookmark ->
+                if id bookmark == bookmarkId then
+                    f bookmark
                 else
-                    Bookmark bookmark
+                    bookmark
             )
+
+
+id : Bookmark -> Int
+id (Bookmark bookmark) =
+    bookmark.id
+
+
+isEditing : Bookmark -> Bool
+isEditing (Bookmark bookmark) =
+    bookmark.isEditing
 
 
 bookmarkDecoder : Decode.Decoder Bookmark
@@ -99,23 +147,23 @@ readonlyView bookmark seekTo editBookmark =
             ]
 
 
-editView : Bookmark -> Html msg
-editView bookmark =
+editView : Bookmark -> (String -> msg) -> Html msg
+editView bookmark setBookmarkName =
     let
         saveButton bookmark =
             a [] [ i [ class "save-button clickable-icon fa fa-check-circle-o fa-lg" ] [] ]
 
         rowOne (Bookmark bookmark) =
             div [ class "bookmark-actions-row" ]
-                [ input [ class "form-control", value bookmark.name ] []
+                [ input [ class "form-control", value bookmark.name, onInput setBookmarkName ] []
                 , saveButton bookmark
                 ]
     in
         span [ class "list-group-item bookmark-row" ] [ rowOne bookmark ]
 
 
-view : List Bookmark -> msg -> (Int -> msg) -> (Int -> msg) -> Html msg
-view bookmarks addBookmark seekTo editBookmark =
+view : List Bookmark -> msg -> (Int -> msg) -> (Int -> msg) -> (String -> msg) -> Html msg
+view bookmarks addBookmark seekTo editBookmark setBookmarkName =
     let
         bookmarkFooter =
             [ div [ class "card-body" ]
@@ -123,11 +171,11 @@ view bookmarks addBookmark seekTo editBookmark =
                 ]
             ]
 
-        bookmarkRenderer (Bookmark bookmark) =
-            if bookmark.isEditing then
-                editView (Bookmark bookmark)
+        bookmarkRenderer bookmark =
+            if isEditing bookmark then
+                editView bookmark setBookmarkName
             else
-                readonlyView (Bookmark bookmark) seekTo editBookmark
+                readonlyView bookmark seekTo editBookmark
     in
         div [ class "card" ]
             [ div [ class "card-header" ] [ text "Bookmarks" ]

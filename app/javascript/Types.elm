@@ -12,6 +12,7 @@ type Msg
     | EditBookmark Int
     | CurrentPlayerTime Int
     | AddBookmarkResponse (Result Http.Error Bookmark)
+    | SetBookmarkName String
 
 
 type alias Model =

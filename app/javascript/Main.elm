@@ -62,7 +62,7 @@ update msg model =
         EditBookmark id ->
             let
                 newSong =
-                    Maybe.map (Song.editBookmark id) model.song
+                    Maybe.map (Song.setBookmarks <| Bookmark.edit id) model.song
             in
                 { model | song = newSong } ! []
 
@@ -84,8 +84,22 @@ update msg model =
         AddBookmarkResponse (Err error) ->
             Debug.crash <| toString error
 
-        AddBookmarkResponse (Ok bookmark) ->
-            model ! []
+        AddBookmarkResponse (Ok responseBookmark) ->
+            let
+                bookmarks =
+                    Maybe.map Song.bookmarks model.song |> Maybe.withDefault []
+
+                newSong =
+                    Maybe.map (Song.setBookmarks <| Bookmark.updateBookmarkFromResponse responseBookmark 0) model.song
+            in
+                { model | song = newSong } ! []
+
+        SetBookmarkName newName ->
+            let
+                newSong =
+                    Maybe.map (Song.setBookmarks <| Bookmark.setActiveBookmarkName newName) model.song
+            in
+                { model | song = newSong } ! []
 
 
 subscriptions : Model -> Sub Msg

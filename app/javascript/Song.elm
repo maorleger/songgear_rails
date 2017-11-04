@@ -4,6 +4,7 @@ module Song
         , addBookmark
         , editBookmark
         , bookmarks
+        , setBookmarks
         , fetchSong
         , init
         , note
@@ -34,6 +35,11 @@ videoId (Song song) =
 bookmarks : Song -> List Bookmark
 bookmarks (Song song) =
     song.bookmarks
+
+
+setBookmarks : (List Bookmark -> List Bookmark) -> Song -> Song
+setBookmarks f (Song song) =
+    Song { song | bookmarks = f song.bookmarks }
 
 
 title : Song -> String

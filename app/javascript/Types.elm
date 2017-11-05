@@ -16,6 +16,8 @@ type Msg
     | SetBookmarkSeconds String
     | SaveBookmark Bookmark
     | SaveBookmarkResponse (Result Http.Error Bookmark)
+    | DeleteBookmark Int
+    | DeleteBookmarkResponse (Result Http.Error ())
 
 
 type alias Model =

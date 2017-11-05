@@ -130,6 +130,18 @@ update msg model =
             in
                 { model | song = newSong } ! []
 
+        DeleteBookmark bookmarkId ->
+            -- todo: trying to flip the order here, and make server calls synchronous and only update the UI
+            -- based on the result. My other calls optimistically update the UI and then crash if a server error happens
+            -- decide on an approach, probably when doing #152546716:
+            model ! [ Http.send DeleteBookmarkResponse <| Bookmark.deleteRequest model.songId bookmarkId ]
+
+        DeleteBookmarkResponse (Err error) ->
+            Debug.crash <| toString error
+
+        DeleteBookmarkResponse (Ok _) ->
+            model ! []
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =

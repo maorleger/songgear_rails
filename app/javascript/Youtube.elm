@@ -38,6 +38,7 @@ view song =
             , setBookmarkName = SetBookmarkName
             , setBookmarkSeconds = SetBookmarkSeconds
             , saveBookmark = SaveBookmark
+            , deleteBookmark = DeleteBookmark
             }
 
         videoRenderer videoId =

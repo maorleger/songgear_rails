@@ -4,6 +4,7 @@ module Bookmark
         , BookmarkEvents
         , addRequest
         , updateRequest
+        , deleteRequest
         , handleUpdateResponse
         , updateName
         , updateSeconds
@@ -39,6 +40,7 @@ type alias BookmarkEvents msg =
     , setBookmarkName : String -> msg
     , setBookmarkSeconds : String -> msg
     , saveBookmark : Bookmark -> msg
+    , deleteBookmark : Int -> msg
     }
 
 
@@ -120,6 +122,11 @@ id (Bookmark bookmark) =
     bookmark.id
 
 
+seconds : Bookmark -> Int
+seconds (Bookmark bookmark) =
+    bookmark.seconds
+
+
 isEditing : Bookmark -> Bool
 isEditing (Bookmark bookmark) =
     bookmark.isEditing
@@ -128,11 +135,6 @@ isEditing (Bookmark bookmark) =
 name : Bookmark -> String
 name (Bookmark bookmark) =
     bookmark.name
-
-
-seconds : Bookmark -> Int
-seconds (Bookmark bookmark) =
-    bookmark.seconds
 
 
 decoder : Decode.Decoder Bookmark
@@ -191,42 +193,55 @@ updateRequest songId (Bookmark bookmark) =
             }
 
 
+deleteRequest : Int -> Int -> Http.Request ()
+deleteRequest songId bookmarkId =
+    Http.request
+        { method = "DELETE"
+        , headers = []
+        , url = U.serverUrl ++ "songs/" ++ toString songId ++ "/bookmarks/" ++ toString bookmarkId
+        , body = Http.emptyBody
+        , expect = Http.expectJson (Decode.succeed ())
+        , timeout = Nothing
+        , withCredentials = False
+        }
+
+
 readonlyView : Bookmark -> BookmarkEvents msg -> Html msg
 readonlyView bookmark events =
     let
-        editButton bookmark =
+        editButton =
             a
-                [ onClick <| events.editBookmark bookmark.id
+                [ onClick <| events.editBookmark <| id bookmark
                 ]
                 [ i [ class "edit-button clickable-icon fa fa-edit fa-lg" ] [] ]
 
-        seekToButton bookmark =
+        seekToButton =
             a
-                [ onClick <| events.seekTo bookmark.seconds
+                [ onClick <| events.seekTo <| seconds bookmark
                 ]
                 [ i [ class "seek-to-button clickable-icon fa fa-bullseye fa-lg" ] [] ]
 
-        removeButton bookmark =
-            a []
+        removeButton =
+            a [ onClick <| events.deleteBookmark <| id bookmark ]
                 [ i [ class "remove-button clickable-icon fa fa-times-circle-o fa-lg" ] []
                 ]
 
-        rowOne (Bookmark bookmark) =
+        rowOne =
             div [ class "d-flex" ]
-                [ seekToButton bookmark
-                , span [ class "bookmark-name" ] [ text bookmark.name ]
-                , editButton bookmark
-                , removeButton bookmark
+                [ seekToButton
+                , span [ class "bookmark-name" ] [ text <| name bookmark ]
+                , editButton
+                , removeButton
                 ]
 
-        rowTwo (Bookmark bookmark) =
+        rowTwo =
             div [ class "bookmark-details-row" ]
-                [ span [ class "bookmark-timestamp" ] [ text <| toTimeFmt bookmark.seconds ]
+                [ span [ class "bookmark-timestamp" ] [ text <| toTimeFmt <| seconds bookmark ]
                 ]
     in
         span [ class "list-group-item bookmark-row" ]
-            [ rowOne bookmark
-            , rowTwo bookmark
+            [ rowOne
+            , rowTwo
             ]
 
 

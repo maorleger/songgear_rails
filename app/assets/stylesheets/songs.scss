@@ -4,7 +4,7 @@
 }
 
 .SongList li {
-  border-bottom: 1px solid #ddd; 
+  border-bottom: 1px solid #ddd;
 }
 
 .SongList li:hover {
@@ -12,8 +12,8 @@
   cursor: pointer;
 }
 
-.SongList li:last-child { 
-  border-bottom: none; 
+.SongList li:last-child {
+  border-bottom: none;
 }
 
 .SongList li a {
@@ -27,11 +27,7 @@
 
 .bookmark-row {
   display: flex;
-  flex-direction: column;
-}
-
-.bookmark-actions-row {
-  display: flex;
+  flex-direction: row;
 }
 
 .bookmark-name {

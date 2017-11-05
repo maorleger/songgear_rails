@@ -13,6 +13,7 @@ type Msg
     | CurrentPlayerTime Int
     | AddBookmarkResponse (Result Http.Error Bookmark)
     | SetBookmarkName String
+    | SetBookmarkSeconds String
     | SaveBookmark Bookmark
     | SaveBookmarkResponse (Result Http.Error Bookmark)
 

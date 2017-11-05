@@ -103,6 +103,15 @@ update msg model =
             in
                 { model | song = newSong } ! []
 
+        SetBookmarkSeconds newSeconds ->
+            let
+                newSong =
+                    Song.setBookmarks (Bookmark.updateSeconds newSeconds) model.song
+
+                -- working towards an idea of an active bookmark
+            in
+                { model | song = newSong } ! []
+
         SaveBookmark bookmark ->
             model ! [ Http.send SaveBookmarkResponse <| Bookmark.updateRequest model.songId bookmark ]
 

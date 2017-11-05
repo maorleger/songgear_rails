@@ -6,6 +6,7 @@ module Bookmark
         , updateRequest
         , handleUpdateResponse
         , updateName
+        , updateSeconds
         , edit
         , decoder
         , init
@@ -36,6 +37,7 @@ type alias BookmarkEvents msg =
     , seekTo : Int -> msg
     , editBookmark : Int -> msg
     , setBookmarkName : String -> msg
+    , setBookmarkSeconds : String -> msg
     , saveBookmark : Bookmark -> msg
     }
 
@@ -71,6 +73,22 @@ activeBookmark =
 
 
 -- TODO: there's an abstraction here, I just havent found it yet... maybe more operations on an editing bookmark?
+
+
+updateSeconds : String -> List Bookmark -> List Bookmark
+updateSeconds newSeconds bookmarks =
+    let
+        parsedSeconds original =
+            String.toInt newSeconds
+                |> Result.withDefault original
+
+        updaterFn (Bookmark bookmark) =
+            Bookmark { bookmark | seconds = parsedSeconds bookmark.seconds }
+    in
+        activeBookmark bookmarks
+            |> Maybe.map id
+            |> Maybe.map (\id -> update updaterFn id bookmarks)
+            |> Maybe.withDefault bookmarks
 
 
 updateName : String -> List Bookmark -> List Bookmark
@@ -110,6 +128,11 @@ isEditing (Bookmark bookmark) =
 name : Bookmark -> String
 name (Bookmark bookmark) =
     bookmark.name
+
+
+seconds : Bookmark -> Int
+seconds (Bookmark bookmark) =
+    bookmark.seconds
 
 
 decoder : Decode.Decoder Bookmark
@@ -172,16 +195,24 @@ readonlyView : Bookmark -> BookmarkEvents msg -> Html msg
 readonlyView bookmark events =
     let
         editButton bookmark =
-            a [ onClick <| events.editBookmark bookmark.id ] [ i [ class "edit-button clickable-icon fa fa-edit fa-lg" ] [] ]
+            a
+                [ onClick <| events.editBookmark bookmark.id
+                ]
+                [ i [ class "edit-button clickable-icon fa fa-edit fa-lg" ] [] ]
 
         seekToButton bookmark =
-            a [ onClick <| events.seekTo bookmark.seconds ] [ i [ class "seek-to-button clickable-icon fa fa-bullseye fa-lg" ] [] ]
+            a
+                [ onClick <| events.seekTo bookmark.seconds
+                ]
+                [ i [ class "seek-to-button clickable-icon fa fa-bullseye fa-lg" ] [] ]
 
         removeButton bookmark =
-            a [] [ i [ class "remove-button clickable-icon fa fa-times-circle-o fa-lg" ] [] ]
+            a []
+                [ i [ class "remove-button clickable-icon fa fa-times-circle-o fa-lg" ] []
+                ]
 
         rowOne (Bookmark bookmark) =
-            div [ class "bookmark-actions-row" ]
+            div [ class "d-flex" ]
                 [ seekToButton bookmark
                 , span [ class "bookmark-name" ] [ text bookmark.name ]
                 , editButton bookmark
@@ -202,16 +233,32 @@ readonlyView bookmark events =
 editView : Bookmark -> BookmarkEvents msg -> Html msg
 editView bookmark events =
     let
-        saveButton bookmark =
-            a [] [ i [ class "save-button clickable-icon fa fa-check-circle-o fa-lg", onClick <| events.saveBookmark bookmark ] [] ]
+        saveButton =
+            a []
+                [ i
+                    [ class "save-button clickable-icon fa fa-check-circle-o fa-lg"
+                    , onClick <| events.saveBookmark bookmark
+                    ]
+                    []
+                ]
 
-        rowOne bookmark =
-            div [ class "bookmark-actions-row" ]
+        nameEditor =
+            div []
                 [ input [ class "form-control", value <| name bookmark, onInput events.setBookmarkName ] []
-                , saveButton bookmark
+                ]
+
+        secondsEditor =
+            div []
+                [ input [ class "form-control", value <| toString <| seconds bookmark, onInput events.setBookmarkSeconds ] []
+                ]
+
+        editors =
+            div [ class "col" ]
+                [ nameEditor
+                , secondsEditor
                 ]
     in
-        span [ class "list-group-item bookmark-row" ] [ rowOne bookmark ]
+        span [ class "list-group-item d-flex align-items-center" ] [ editors, saveButton ]
 
 
 view : List Bookmark -> BookmarkEvents msg -> Html msg

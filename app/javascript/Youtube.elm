@@ -36,6 +36,7 @@ view song =
             , seekTo = SeekTo
             , editBookmark = EditBookmark
             , setBookmarkName = SetBookmarkName
+            , setBookmarkSeconds = SetBookmarkSeconds
             , saveBookmark = SaveBookmark
             }
 

@@ -10,8 +10,8 @@ module Api
       end
 
       def update
-        @song = Song.find(params[:song_id])
-        @bookmark = @song.bookmarks.find(params[:id])
+        song = Song.find(params[:song_id])
+        @bookmark = song.bookmarks.find(params[:id])
         @bookmark.update!(bookmark_params)
         json_response(@bookmark)
       end

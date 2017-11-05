@@ -106,4 +106,54 @@ RSpec.describe "Bookmarks API", type: :request do
       end
     end
   end
+
+  describe "DELETE /api/v1/songs/:song_id/bookmarks/:bookmark_id" do
+    let!(:bookmark) { create(:bookmark) }
+
+    def do_request(opts = {})
+      arguments = {
+        song_id: bookmark.song_id,
+        bookmark_id: bookmark.id,
+      }.merge(opts)
+
+      delete "/api/v1/songs/#{arguments[:song_id]}/bookmarks/#{arguments[:bookmark_id]}"
+    end
+
+    describe "when the request is valid" do
+      it "deletes the bookmark" do
+        expect do
+          do_request
+        end.to change { Bookmark.count }.by(-1)
+      end
+
+      it "returns 204" do
+        do_request
+        expect(response).to have_http_status(204)
+      end
+    end
+
+    describe "when the request is invalid" do
+      context "because the song id is invalid" do
+        it "returns 404" do
+          do_request(song_id: 999)
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context "because the bookmark id doesnt exist" do
+        it "returns 404" do
+          do_request(bookmark_id: 999)
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context "because the bookmark belongs to a different song" do
+        let(:other_bookmark) { create(:bookmark) }
+        it "returns 404" do
+          do_request(bookmark_id: other_bookmark.id)
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+  end
 end

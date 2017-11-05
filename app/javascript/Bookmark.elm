@@ -200,7 +200,7 @@ deleteRequest songId bookmarkId =
         , headers = []
         , url = U.serverUrl ++ "songs/" ++ toString songId ++ "/bookmarks/" ++ toString bookmarkId
         , body = Http.emptyBody
-        , expect = Http.expectJson (Decode.succeed ())
+        , expect = Http.expectStringResponse << always <| Ok ()
         , timeout = Nothing
         , withCredentials = False
         }

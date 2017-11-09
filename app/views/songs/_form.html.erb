@@ -1,0 +1,32 @@
+<div>
+  <div class="row">
+    <div class="col-12">
+      <%= form_for @song do |f| %>
+        <% if @song.errors.any? %>
+          <div class="alert alert-danger" role="alert">
+            <p>Oh oh, looks like there were errors on the page</p>
+            <ul>
+              <% @song.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="form-group">
+          <%= label :song, :title %>
+          <%= f.text_field :title, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= label :song, :youtube_url, "YouTube URL" %>
+          <%= f.text_field :youtube_url, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= label :song, :note %>
+          <%= f.text_field :note, class: 'form-control' %>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      <% end %>
+    </div>
+  </div>
+</div>

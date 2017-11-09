@@ -65,4 +65,21 @@ RSpec.describe SongsController, type: :controller do
       end
     end
   end
+
+  describe "GET #edit" do
+    let(:song) { build_stubbed(:song) }
+
+    describe "when the request is valid" do
+      it "sets the song correctly" do
+        expect_any_instance_of(SongRepository).to receive(:get).with(song.id.to_s).and_return(song)
+        get :edit, params: { id: song.id }
+        expect(assigns(:song)).to eq(song)
+      end
+    end
+
+    describe "when the request is invalid" do
+      
+    end
+
+  end
 end

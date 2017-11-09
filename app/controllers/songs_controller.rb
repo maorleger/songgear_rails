@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 class SongsController < ApplicationController
+  before_action :set_song, only: [:show, :edit]
+
   def index
     @songs = repository.all
   end
 
-  def show
-    @song = repository.get(params[:id])
-  end
+  def show; end
 
   def new
     @song = Song.new
@@ -22,7 +22,13 @@ class SongsController < ApplicationController
     end
   end
 
+  def edit; end
+
   private
+
+    def set_song
+      @song = repository.get(params[:id])
+    end
 
     def repository
       @repository ||= SongRepository.new

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SongsController < ApplicationController
-  before_action :set_song, only: [:show, :edit]
+  before_action :set_song, only: [:show, :edit, :update]
 
   def index
     @songs = repository.all
@@ -23,6 +23,15 @@ class SongsController < ApplicationController
   end
 
   def edit; end
+
+  def update
+    @song = repository.update(@song, song_params)
+    if @song.valid?
+      redirect_to song_path(@song)
+    else
+      render :edit
+    end
+  end
 
   private
 

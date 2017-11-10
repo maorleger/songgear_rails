@@ -84,6 +84,31 @@ RSpec.describe SongsController, type: :controller do
         expect(response).to have_http_status(404)
       end
     end
+  end
 
+  describe "PUT #update" do
+    let(:song) { create(:song) }
+    describe "when song is valid" do
+      it "updates the song" do
+
+        params = { title: "foo", youtube_url: "bar", note: "all your base are belong to us" }
+        expect_any_instance_of(SongRepository).to receive(:update).with(song, params.with_indifferent_access).and_return(song)
+        allow(song).to receive(:valid?).and_return(true)
+
+        put :update, params: { id: song.id, song: params.merge!(random_param: "better not see this") }
+        expect(response).to redirect_to(song_path(song))
+      end
+    end
+
+    describe "when validation fails" do
+      it "does not create a new song" do
+        params = { title: "", youtube_url: "bar", note: "all your base are belong to us" }
+        expect_any_instance_of(SongRepository).to receive(:update).with(song, params.with_indifferent_access).and_return(song)
+        allow(song).to receive(:valid?).and_return(false)
+
+        put :update, params: { id: song.id, song: params }
+        expect(response).to be_success
+      end
+    end
   end
 end

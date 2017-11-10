@@ -17,6 +17,12 @@ class Repository
     model.create(params)
   end
 
+  def update(object, params)
+    object.tap do |o|
+      o.update(params)
+    end
+  end
+
   private
     attr_reader :model
 end

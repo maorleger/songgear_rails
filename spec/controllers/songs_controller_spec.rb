@@ -78,7 +78,11 @@ RSpec.describe SongsController, type: :controller do
     end
 
     describe "when the request is invalid" do
-      
+      it "returns 404" do
+        get :edit, params: { id: 999 }
+        expect(assigns(:song)).to be_nil
+        expect(response).to have_http_status(404)
+      end
     end
 
   end

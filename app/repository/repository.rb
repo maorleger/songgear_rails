@@ -10,7 +10,7 @@ class Repository
   end
 
   def get(id)
-    model.find_by_id(id)
+    model.find(id)
   end
 
   def create(params)

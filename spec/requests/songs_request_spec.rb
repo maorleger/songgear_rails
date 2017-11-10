@@ -57,18 +57,20 @@ RSpec.describe "Songs API", type: :request do
         end
       end
 
-      context "when the record does not exist" do
-        let (:song_id) { 100 }
+    end
 
-        it "returns status code 404" do
-          expect(response).to have_http_status(404)
-        end
+    describe "when the record does not exist" do
+      let (:song_id) { Song.last.id + 100 }
 
-        it "returns a not found message" do
-          expect(response.body).to match(/Couldn't find Song/)
-        end
+      it "returns status code 404" do
+        expect(response).to have_http_status(404)
+      end
+
+      it "returns a not found message" do
+        expect(response.body).to match(/Couldn't find Song/)
       end
     end
+
     describe "POST /api/v1/songs" do
       let(:title) { "Foobar" }
       let(:note) { "My note" }

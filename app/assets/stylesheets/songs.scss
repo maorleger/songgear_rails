@@ -25,6 +25,12 @@
   text-decoration: none;
 }
 
+.Song {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .bookmark-row {
   display: flex;
   flex-direction: row;

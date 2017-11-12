@@ -12,7 +12,7 @@
       <ul class="SongList">
         <% @songs.each do |s| %>
           <li class="Song">
-            <span><%= link_to(s.title, song_path(s.id)) %></span>
+            <span class="Song__Link"><%= link_to(s.title, song_path(s.id)) %></span>
             <span>
               <%= link_to  edit_song_path(s.id), class: "btn btn-secondary " do %>
                 <i class="fa fa-pencil" aria-hidden="true"></i>

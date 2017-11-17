@@ -47,7 +47,13 @@ view song =
                     [ youtube videoId ]
                 , div
                     [ class "col-md-4" ]
-                    [ Bookmark.view (Song.bookmarks song) bookmarkEvents ]
+                    [ div []
+                        [ Bookmark.view (Song.bookmarks song) bookmarkEvents
+                        , div []
+                            [ U.radio (SetPlayerSpeed 0.25) "0.25"
+                            ]
+                        ]
+                    ]
                 ]
     in
         Song.videoId song

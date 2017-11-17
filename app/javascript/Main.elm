@@ -148,6 +148,9 @@ update msg model =
         DeleteBookmarkResponse (Ok _) ->
             model ! []
 
+        SetPlayerSpeed newSpeed ->
+            { model | song = Song.setPlayerSpeed newSpeed model.song } ! []
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =

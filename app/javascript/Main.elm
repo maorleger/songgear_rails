@@ -149,7 +149,7 @@ update msg model =
             model ! []
 
         SetPlayerSpeed newSpeed ->
-            { model | song = Song.setPlayerSpeed newSpeed model.song } ! []
+            { model | song = Song.setPlayerSpeed newSpeed model.song } ! [ Youtube.setYTPlayerSpeed newSpeed ]
 
 
 subscriptions : Model -> Sub Msg

@@ -22,6 +22,12 @@ document.addEventListener('turbolinks:load', () => {
       });
     });
 
+    app.ports.setYTPlayerSpeed.subscribe(function(speed) {
+      requestAnimationFrame(function() {
+        player.setPlaybackRate(speed);
+      });
+    });
+
     app.ports.getYTPlayerTime.subscribe(function() {
       app.ports.currentYTPlayerTime.send(Math.round(player.getCurrentTime()));
     });

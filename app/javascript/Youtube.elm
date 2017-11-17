@@ -2,6 +2,7 @@ port module Youtube
     exposing
         ( currentYTPlayerTime
         , getYTPlayerTime
+        , setYTPlayerSpeed
         , loadVideo
         , seekTo
         , view
@@ -26,6 +27,9 @@ port getYTPlayerTime : () -> Cmd msg
 
 
 port currentYTPlayerTime : (Int -> msg) -> Sub msg
+
+
+port setYTPlayerSpeed : Float -> Cmd msg
 
 
 view : Song -> Html Msg

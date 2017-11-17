@@ -1,6 +1,6 @@
 module Utilities exposing (..)
 
-import Html.Attributes exposing (classList, type_)
+import Html.Attributes exposing (classList, type_, name, checked)
 import Html.Events exposing (onClick)
 import Html
     exposing
@@ -22,9 +22,13 @@ serverUrl =
     "/api/v1/"
 
 
-radio : msg -> String -> Html msg
-radio msg name =
-    label []
-        [ input [ type_ "radio", onClick msg ] []
-        , text name
-        ]
+radio : msg -> Float -> Float -> Html msg
+radio msg value currentValue =
+    let
+        isChecked =
+            value == currentValue
+    in
+        label []
+            [ input [ type_ "radio", onClick msg, checked isChecked, name "player-speed" ] []
+            , text <| toString value
+            ]

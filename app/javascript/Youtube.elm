@@ -49,9 +49,7 @@ view song =
                     [ class "col-md-4" ]
                     [ div []
                         [ Bookmark.view (Song.bookmarks song) bookmarkEvents
-                        , div []
-                            [ U.radio (SetPlayerSpeed 0.25) "0.25"
-                            ]
+                        , playerSpeedControls song
                         ]
                     ]
                 ]
@@ -59,6 +57,17 @@ view song =
         Song.videoId song
             |> Maybe.map videoRenderer
             |> Maybe.withDefault (div [] [])
+
+
+playerSpeedControls : Song -> Html Msg
+playerSpeedControls song =
+    let
+        speeds =
+            [ 0.25, 0.5, 0.75, 1.0 ]
+    in
+        div [] <|
+            List.map (\speed -> U.radio (SetPlayerSpeed speed) speed (Song.playerSpeed song))
+                speeds
 
 
 youtube : String -> Html msg

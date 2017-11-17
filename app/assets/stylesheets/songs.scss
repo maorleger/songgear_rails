@@ -1,34 +1,39 @@
-.SongList {
+.song-list {
   list-style-type: none;
   margin: 15px auto;
+
+  li {
+    border-bottom: 1px solid #ddd;
+
+    &:hover {
+      background-color: #eee;
+      cursor: pointer;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    a {
+      padding: 15px;
+      display: block;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
 }
 
-.SongList li {
-  border-bottom: 1px solid #ddd;
-}
-
-.SongList li:hover {
-  background-color: #eee;
-  cursor: pointer;
-}
-
-.SongList li:last-child {
-  border-bottom: none;
-}
-
-.SongList li a {
-  padding: 15px;
-  display: block;
-}
-
-.SongList li a:hover {
-  text-decoration: none;
-}
-
-.Song {
+.song {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.song__link {
+  flex: 1 1 0;
+  cursor: pointer;
 }
 
 .bookmark-row {
@@ -73,11 +78,7 @@
   margin-left: 5px;
 }
 
-.videoWrapper {
+.video-wrapper {
   padding: 10px;
 }
 
-.Song__Link {
-  flex: 1 1 0;
-  cursor: pointer;
-}

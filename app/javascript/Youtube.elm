@@ -43,7 +43,7 @@ view song =
 
         videoRenderer videoId =
             div [ class "row" ]
-                [ div [ class "col-md-8 videoWrapper" ]
+                [ div [ class "col-md-8 video-wrapper" ]
                     [ youtube videoId ]
                 , div
                     [ class "col-md-4" ]

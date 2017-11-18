@@ -52,8 +52,8 @@ view song =
                 , div
                     [ class "col-md-4" ]
                     [ div []
-                        [ Bookmark.view (Song.bookmarks song) bookmarkEvents
-                        , playerSpeedControls song
+                        [ playerSpeedControls song
+                        , Bookmark.view (Song.bookmarks song) bookmarkEvents
                         ]
                     ]
                 ]
@@ -68,10 +68,22 @@ playerSpeedControls song =
     let
         speeds =
             [ 0.25, 0.5, 0.75, 1.0 ]
+
+        classes =
+            [ "card-body"
+            , "form-check"
+            , "form-check-inline"
+            , "d-flex"
+            , "justify-content-around"
+            ]
+                |> U.toClassList
     in
-        div [] <|
-            List.map (\speed -> U.radio (SetPlayerSpeed speed) speed (Song.playerSpeed song))
-                speeds
+        div [ class "card" ]
+            [ div [ class "card-header" ] [ text "Speed controls" ]
+            , div [ classes ] <|
+                List.map (\speed -> U.radioButton (SetPlayerSpeed speed) speed (Song.playerSpeed song))
+                    speeds
+            ]
 
 
 youtube : String -> Html msg

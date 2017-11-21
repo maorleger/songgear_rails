@@ -9,7 +9,8 @@ port module Youtube
         )
 
 import Html exposing (..)
-import Html.Attributes exposing (classList, class, id, href)
+import Html.Events exposing (onClick)
+import Html.Attributes exposing (classList, class, id, href, type_)
 import Html.Keyed as Keyed
 import Song exposing (Song)
 import Bookmark exposing (Bookmark)
@@ -74,14 +75,25 @@ playerSpeedControls song =
             , "form-check"
             , "form-check-inline"
             , "d-flex"
-            , "justify-content-around"
+            , "justify-content-center"
+            , "btn-group"
             ]
                 |> U.toClassList
+
+        toClassList speed =
+            classList
+                [ ( "btn", True )
+                , ( "btn-dark", True )
+                , ( "active", Song.playerSpeed song == speed )
+                ]
     in
         div [ class "card" ]
             [ div [ class "card-header" ] [ text "Speed controls" ]
             , div [ classes ] <|
-                List.map (\speed -> U.radioButton (SetPlayerSpeed speed) speed (Song.playerSpeed song))
+                List.map
+                    (\speed ->
+                        button [ type_ "button", toClassList speed, onClick <| SetPlayerSpeed speed ] [ text <| toString speed ]
+                    )
                     speeds
             ]
 

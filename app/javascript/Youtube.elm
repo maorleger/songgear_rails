@@ -86,20 +86,18 @@ playerSpeedControls song =
                 , ( "btn-dark", True )
                 , ( "active", Song.playerSpeed song == speed )
                 ]
+
+        speedButton speed =
+            button
+                [ type_ "button"
+                , toClassList speed
+                , onClick <| SetPlayerSpeed speed
+                ]
+                [ text <| toString speed ]
     in
         div [ class "card d-none d-lg-block" ]
             [ div [ class "card-header" ] [ text "Speed controls" ]
-            , div [ classes ] <|
-                List.map
-                    (\speed ->
-                        button
-                            [ type_ "button"
-                            , toClassList speed
-                            , onClick <| SetPlayerSpeed speed
-                            ]
-                            [ text <| toString speed ]
-                    )
-                    speeds
+            , div [ classes ] <| List.map speedButton speeds
             ]
 
 

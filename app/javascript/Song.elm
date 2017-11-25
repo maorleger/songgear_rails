@@ -13,6 +13,7 @@ module Song
         , videoId
         , playerSpeed
         , videoPlayerLoaded
+        , videoPlayerAvailable
         )
 
 import Http
@@ -56,6 +57,11 @@ setPlayerSpeed newSpeed =
         (\(Song song) ->
             Song { song | playerSpeed = newSpeed }
         )
+
+
+videoPlayerAvailable : Song -> Bool
+videoPlayerAvailable (Song song) =
+    song.videoLoaded
 
 
 videoPlayerLoaded : Maybe Song -> Maybe Song

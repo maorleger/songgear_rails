@@ -51,17 +51,22 @@ view song =
             }
 
         videoRenderer videoId =
-            div [ class "row" ]
-                [ div [ class "col-md-8 video-wrapper" ]
-                    [ youtube videoId ]
-                , div
-                    [ class "col-md-4" ]
-                    [ div []
-                        [ playerSpeedControls song
-                        , Bookmark.view (Song.bookmarks song) bookmarkEvents
+            case Song.videoPlayerAvailable song of
+                True ->
+                    div [ class "row" ]
+                        [ div [ class "col-md-8 video-wrapper" ]
+                            [ youtube videoId ]
+                        , div
+                            [ class "col-md-4" ]
+                            [ div []
+                                [ playerSpeedControls song
+                                , Bookmark.view (Song.bookmarks song) bookmarkEvents
+                                ]
+                            ]
                         ]
-                    ]
-                ]
+
+                _ ->
+                    div [] []
     in
         Song.videoId song
             |> Maybe.map videoRenderer

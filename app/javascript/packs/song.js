@@ -13,8 +13,7 @@ document.addEventListener('turbolinks:load', () => {
   if (target) {
     var app = Elm.Main.embed(target, { songId: target.dataset.songId });
     app.ports.loadVideo.subscribe(function(videoId) {
-      setupPlayer(videoId);
-      app.ports.videoPlayerLoaded.send(true);
+      setupPlayer(videoId, app.ports.videoPlayerLoaded);
     });
 
     app.ports.seekTo.subscribe(function(seconds) {
@@ -35,7 +34,7 @@ document.addEventListener('turbolinks:load', () => {
   }
 })
 
-function setupPlayer(videoId) {
+function setupPlayer(videoId, callback) {
   var videoId = videoId;
   var retryCount = 0;
   var numRetries = 10;
@@ -47,6 +46,7 @@ function setupPlayer(videoId) {
           videoId: videoId,
           playerVars: { 'playsinline': 1 },
         });
+        callback.send(true);
       } catch (err) {
         if (retryCount < numRetries) {
           console.log("retrying YT player");

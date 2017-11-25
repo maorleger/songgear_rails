@@ -81,6 +81,13 @@ update msg model =
                             )
                       ]
 
+        VideoPlayerLoaded _ ->
+            let
+                newSong =
+                    Song.videoPlayerLoaded model.song
+            in
+                { model | song = newSong } ! []
+
         AddBookmarkResponse (Err error) ->
             Debug.crash <| toString error
 
@@ -98,8 +105,6 @@ update msg model =
             let
                 newSong =
                     Song.setBookmarks (Bookmark.updateName newName) model.song
-
-                -- working towards an idea of an active bookmark
             in
                 { model | song = newSong } ! []
 
@@ -107,8 +112,6 @@ update msg model =
             let
                 newSong =
                     Song.setBookmarks (Bookmark.updateSeconds newSeconds) model.song
-
-                -- working towards an idea of an active bookmark
             in
                 { model | song = newSong } ! []
 
@@ -137,9 +140,6 @@ update msg model =
                         (List.filter <| (/=) bookmarkId << Bookmark.id)
                         model.song
             in
-                -- todo: trying to flip the order here, and make server calls synchronous and only update the UI
-                -- based on the result. My other calls optimistically update the UI and then crash if a server error happens
-                -- decide on an approach, probably when doing #152546716:
                 { model | song = newSong } ! [ Http.send DeleteBookmarkResponse <| Bookmark.deleteRequest model.songId bookmarkId ]
 
         DeleteBookmarkResponse (Err error) ->
@@ -154,7 +154,10 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Youtube.currentYTPlayerTime CurrentPlayerTime
+    Sub.batch
+        [ Youtube.currentYTPlayerTime CurrentPlayerTime
+        , Youtube.videoPlayerLoaded VideoPlayerLoaded
+        ]
 
 
 main : Program Flags Model Msg

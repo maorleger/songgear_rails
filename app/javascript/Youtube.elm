@@ -1,6 +1,7 @@
 port module Youtube
     exposing
         ( currentYTPlayerTime
+        , videoPlayerLoaded
         , getYTPlayerTime
         , setYTPlayerSpeed
         , loadVideo
@@ -28,6 +29,9 @@ port getYTPlayerTime : () -> Cmd msg
 
 
 port currentYTPlayerTime : (Int -> msg) -> Sub msg
+
+
+port videoPlayerLoaded : (Bool -> msg) -> Sub msg
 
 
 port setYTPlayerSpeed : Float -> Cmd msg

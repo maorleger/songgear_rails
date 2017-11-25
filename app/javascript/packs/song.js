@@ -14,6 +14,7 @@ document.addEventListener('turbolinks:load', () => {
     var app = Elm.Main.embed(target, { songId: target.dataset.songId });
     app.ports.loadVideo.subscribe(function(videoId) {
       setupPlayer(videoId);
+      app.ports.videoPlayerLoaded.send(true);
     });
 
     app.ports.seekTo.subscribe(function(seconds) {

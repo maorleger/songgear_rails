@@ -11,6 +11,7 @@ type Msg
     | AddBookmark
     | EditBookmark Int
     | CurrentPlayerTime Int
+    | VideoPlayerLoaded Bool
     | AddBookmarkResponse (Result Http.Error Bookmark)
     | SetBookmarkName String
     | SetBookmarkSeconds String

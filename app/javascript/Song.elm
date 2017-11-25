@@ -12,6 +12,7 @@ module Song
         , title
         , videoId
         , playerSpeed
+        , videoPlayerLoaded
         )
 
 import Http
@@ -27,6 +28,7 @@ type Song
         , note : Maybe String
         , bookmarks : List Bookmark
         , playerSpeed : Float
+        , videoLoaded : Bool
         }
 
 
@@ -53,6 +55,14 @@ setPlayerSpeed newSpeed =
     Maybe.map
         (\(Song song) ->
             Song { song | playerSpeed = newSpeed }
+        )
+
+
+videoPlayerLoaded : Maybe Song -> Maybe Song
+videoPlayerLoaded =
+    Maybe.map
+        (\(Song song) ->
+            Song { song | videoLoaded = True }
         )
 
 
@@ -88,7 +98,7 @@ editBookmark bookmarkId (Song song) =
 
 init : String -> Maybe String -> Maybe String -> List Bookmark -> Song
 init title videoId note bookmarks =
-    Song { title = title, videoId = videoId, note = note, bookmarks = bookmarks, playerSpeed = 1.0 }
+    Song { title = title, videoId = videoId, note = note, bookmarks = bookmarks, playerSpeed = 1.0, videoLoaded = False }
 
 
 fetchSong : Int -> Http.Request Song

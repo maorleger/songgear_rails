@@ -151,10 +151,16 @@ update msg model =
         SetPlayerSpeed newSpeed ->
             { model | song = Song.setPlayerSpeed newSpeed model.song } ! [ Youtube.setYTPlayerSpeed newSpeed ]
 
+        AvailablePlayerSpeeds playerSpeeds ->
+            { model | song = Song.setAvailablePlayerSpeeds playerSpeeds model.song } ! []
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Youtube.currentYTPlayerTime CurrentPlayerTime
+    Sub.batch
+        [ Youtube.currentPlayerTimeReceived CurrentPlayerTime
+        , Youtube.playerSpeedsReceived AvailablePlayerSpeeds
+        ]
 
 
 main : Program Flags Model Msg

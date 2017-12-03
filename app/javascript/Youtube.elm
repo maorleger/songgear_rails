@@ -1,7 +1,8 @@
 port module Youtube
     exposing
-        ( currentYTPlayerTime
+        ( currentPlayerTimeReceived
         , getYTPlayerTime
+        , playerSpeedsReceived
         , setYTPlayerSpeed
         , loadVideo
         , seekTo
@@ -27,10 +28,13 @@ port seekTo : Int -> Cmd msg
 port getYTPlayerTime : () -> Cmd msg
 
 
-port currentYTPlayerTime : (Int -> msg) -> Sub msg
+port currentPlayerTimeReceived : (Int -> msg) -> Sub msg
 
 
 port setYTPlayerSpeed : Float -> Cmd msg
+
+
+port playerSpeedsReceived : (List Float -> msg) -> Sub msg
 
 
 view : Song -> Html Msg
@@ -68,7 +72,7 @@ playerSpeedControls : Song -> Html Msg
 playerSpeedControls song =
     let
         speeds =
-            [ 0.25, 0.5, 0.75, 1.0 ]
+            Song.availablePlayerSpeeds song
 
         classes =
             [ "card-body"
@@ -95,10 +99,15 @@ playerSpeedControls song =
                 ]
                 [ text <| toString speed ]
     in
-        div [ class "card d-none d-lg-block" ]
-            [ div [ class "card-header" ] [ text "Speed controls" ]
-            , div [ classes ] <| List.map speedButton speeds
-            ]
+        case List.length speeds of
+            1 ->
+                div [] []
+
+            _ ->
+                div [ class "card" ]
+                    [ div [ class "card-header" ] [ text "Speed controls" ]
+                    , div [ classes ] <| List.map speedButton speeds
+                    ]
 
 
 youtube : String -> Html msg

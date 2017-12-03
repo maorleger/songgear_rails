@@ -18,6 +18,7 @@ type Msg
     | SaveBookmarkResponse (Result Http.Error Bookmark)
     | DeleteBookmark Int
     | DeleteBookmarkResponse (Result Http.Error ())
+    | AvailablePlayerSpeeds (List Float)
     | SetPlayerSpeed Float
 
 

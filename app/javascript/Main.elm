@@ -51,7 +51,10 @@ update msg model =
             Debug.crash <| toString error
 
         SongResponse (Ok song) ->
-            { model | song = Just song } ! [ Youtube.loadVideo <| Maybe.withDefault "" (Song.videoId song) ]
+            { model | song = Just song }
+                ! [ Maybe.withDefault "" (Song.videoId song)
+                        |> Youtube.loadVideo
+                  ]
 
         SeekTo seconds ->
             model ! [ Youtube.seekTo seconds ]
@@ -98,8 +101,6 @@ update msg model =
             let
                 newSong =
                     Song.setBookmarks (Bookmark.updateName newName) model.song
-
-                -- working towards an idea of an active bookmark
             in
                 { model | song = newSong } ! []
 
@@ -107,13 +108,14 @@ update msg model =
             let
                 newSong =
                     Song.setBookmarks (Bookmark.updateSeconds newSeconds) model.song
-
-                -- working towards an idea of an active bookmark
             in
                 { model | song = newSong } ! []
 
         SaveBookmark bookmark ->
-            model ! [ Http.send SaveBookmarkResponse <| Bookmark.updateRequest model.songId bookmark ]
+            model
+                ! [ Bookmark.updateRequest model.songId bookmark
+                        |> Http.send SaveBookmarkResponse
+                  ]
 
         SaveBookmarkResponse (Err error) ->
             Debug.crash <| toString error
@@ -137,10 +139,10 @@ update msg model =
                         (List.filter <| (/=) bookmarkId << Bookmark.id)
                         model.song
             in
-                -- todo: trying to flip the order here, and make server calls synchronous and only update the UI
-                -- based on the result. My other calls optimistically update the UI and then crash if a server error happens
-                -- decide on an approach, probably when doing #152546716:
-                { model | song = newSong } ! [ Http.send DeleteBookmarkResponse <| Bookmark.deleteRequest model.songId bookmarkId ]
+                { model | song = newSong }
+                    ! [ Bookmark.deleteRequest model.songId bookmarkId
+                            |> Http.send DeleteBookmarkResponse
+                      ]
 
         DeleteBookmarkResponse (Err error) ->
             Debug.crash <| toString error

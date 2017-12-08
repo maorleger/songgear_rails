@@ -2,20 +2,24 @@ version: '3'
 services:
   db:
     image: postgres
-  # webpacker:
-  #   build: .
-  #   command: bundle exec bin/webpack-dev-server
-  #   volumes:
-  #     - .:/app
-  #   ports:
-  #     - "8080:8080"
+  webpacker:
+    build: .
+    environment:
+      WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
+    command: /bin/bash -c './bin/yarn && bundle exec bin/webpack-dev-server'
+    volumes:
+      - .:/app
+    ports:
+      - "3035:3035"
   web:
     build: .
-    command: foreman start -f Procfile.dev 
+    command: /bin/bash -c 'rm -rf tmp/pids/server.pid && (bundle exec rails db:migrate 2>/dev/null || bundle exec rails db:setup) && bundle exec rails s -p 3000 -b "0.0.0.0"'
     volumes:
       - .:/app
     ports:
       - "3000:3000"
+    environment:
+      WEBPACKER_DEV_SERVER_HOST: webpacker
     depends_on:
       - db
-      # - webpacker
+      - webpacker

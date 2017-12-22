@@ -6,14 +6,38 @@ Rails version: 5.1.4
 ## Instructions
 
 ### Dependencies
-Docker
+Bundler, foreman, postgres 
 
-### Startup
+```
+# if necessary, install postgres:
+brew install postgresql
 
-1. Build the containers `docker-compose build`
-2. Start the server in the background `bin/server`
-3. Tail the logs `docker-compose logs -f`
+# install bundler, foreman:
+gem install bundler
+gem install foreman
+```
 
-### Shutdown
+### To setup the database
 
-`bin/server` will fire up the containers in background mode so you'll need to run `docker-compose down` to shut everything down
+```
+# verify postgres is started
+brew services start postgresql
+
+# migrate the database
+rails db:setup
+```
+
+### Install frontend dependencies:
+
+```
+npm install
+```
+
+### To start the app in development mode:
+
+```
+./bin/server
+```
+
+
+

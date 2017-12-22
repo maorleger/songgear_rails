@@ -1,2 +1,3 @@
 #!/bin/bash -i
-docker-compose up -d
+bundle install
+bundle exec foreman start -f Procfile.dev

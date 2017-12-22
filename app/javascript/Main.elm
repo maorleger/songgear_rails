@@ -156,6 +156,40 @@ update msg model =
         AvailablePlayerSpeeds playerSpeeds ->
             { model | song = Song.setAvailablePlayerSpeeds playerSpeeds model.song } ! []
 
+        UpdateStartLoop seconds ->
+            let
+                endSeconds =
+                    Maybe.map Song.loopEnd model.song
+                        |> Maybe.withDefault ""
+            in
+                { model | song = Song.setLoop seconds endSeconds model.song } ! []
+
+        UpdateEndLoop seconds ->
+            let
+                startSeconds =
+                    Maybe.map Song.loopStart model.song
+                        |> Maybe.withDefault ""
+            in
+                { model | song = Song.setLoop startSeconds seconds model.song } ! []
+
+        StartLoop ->
+            let
+                loop =
+                    Maybe.map Song.loop model.song
+
+                cmd =
+                    case loop of
+                        Just loop ->
+                            Youtube.startLoop loop
+
+                        _ ->
+                            Cmd.none
+            in
+                model ! [ cmd ]
+
+        EndLoop ->
+            model ! []
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =

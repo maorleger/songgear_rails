@@ -7,12 +7,15 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var player;
+var videoId;
 document.addEventListener('turbolinks:load', () => {
   const target = document.getElementById('elm-main')
 
   if (target) {
     var app = Elm.Main.embed(target, { songId: target.dataset.songId });
     app.ports.loadVideo.subscribe(function(videoId) {
+      debugger;
+      videoId = videoId;
       setupPlayer(videoId, app.ports.playerSpeedsReceived);
     });
 
@@ -30,6 +33,14 @@ document.addEventListener('turbolinks:load', () => {
 
     app.ports.getYTPlayerTime.subscribe(function() {
       app.ports.currentYTPlayerTime.send(Math.round(player.getCurrentTime()));
+    });
+
+    app.ports.startLoop.subscribe(function(loop) {
+      debugger;
+      player.loadVideoById({'videoId': videoId,
+        'startSeconds': loop[0],
+        'endSeconds': loop[1],
+      });
     });
   }
 })

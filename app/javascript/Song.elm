@@ -14,6 +14,10 @@ module Song
         , title
         , videoId
         , playerSpeed
+        , loopStart
+        , loopEnd
+        , loop
+        , setLoop
         )
 
 import Http
@@ -30,6 +34,7 @@ type Song
         , bookmarks : List Bookmark
         , playerSpeed : Float
         , availableSpeeds : List Float
+        , loop : ( String, String )
         }
 
 
@@ -115,7 +120,33 @@ init title videoId note bookmarks =
         , bookmarks = bookmarks
         , playerSpeed = 1.0
         , availableSpeeds = [ 1.0 ]
+        , loop = ( "", "" )
         }
+
+
+loopStart : Song -> String
+loopStart (Song song) =
+    song.loop
+        |> Tuple.first
+
+
+loopEnd : Song -> String
+loopEnd (Song song) =
+    song.loop
+        |> Tuple.second
+
+
+setLoop : String -> String -> Maybe Song -> Maybe Song
+setLoop start end =
+    Maybe.map
+        (\(Song song) ->
+            Song { song | loop = ( start, end ) }
+        )
+
+
+loop : Song -> ( String, String )
+loop (Song song) =
+    song.loop
 
 
 fetchSong : Int -> Http.Request Song

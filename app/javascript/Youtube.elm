@@ -4,14 +4,15 @@ port module Youtube
         , getYTPlayerTime
         , playerSpeedsReceived
         , setYTPlayerSpeed
+        , startLoop
         , loadVideo
         , seekTo
         , view
         )
 
 import Html exposing (..)
-import Html.Events exposing (onClick)
-import Html.Attributes exposing (classList, class, id, href, type_)
+import Html.Events exposing (onClick, onInput)
+import Html.Attributes exposing (classList, class, id, href, type_, value)
 import Html.Keyed as Keyed
 import Song exposing (Song)
 import Bookmark exposing (Bookmark)
@@ -37,6 +38,9 @@ port setYTPlayerSpeed : Float -> Cmd msg
 port playerSpeedsReceived : (List Float -> msg) -> Sub msg
 
 
+port startLoop : ( String, String ) -> Cmd msg
+
+
 view : Song -> Html Msg
 view song =
     let
@@ -58,6 +62,7 @@ view song =
                     [ class "col-md-4" ]
                     [ div []
                         [ playerSpeedControls song
+                        , loopControls song
                         , Bookmark.view (Song.bookmarks song) bookmarkEvents
                         ]
                     ]
@@ -108,6 +113,32 @@ playerSpeedControls song =
                     [ div [ class "card-header" ] [ text "Speed controls" ]
                     , div [ classes ] <| List.map speedButton speeds
                     ]
+
+
+loopControls : Song -> Html Msg
+loopControls song =
+    let
+        classes =
+            []
+                |> U.toClassList
+    in
+        div [ class "card" ]
+            [ div [ class "card-header" ] [ text "Loop controls" ]
+            , div [ classes ] <|
+                [ input
+                    [ onInput UpdateStartLoop
+                    , value <| Song.loopStart song
+                    ]
+                    []
+                , input
+                    [ onInput UpdateEndLoop
+                    , value <| Song.loopEnd song
+                    ]
+                    []
+                , button [ onClick StartLoop ] [ text "Start" ]
+                , button [ onClick EndLoop ] [ text "End" ]
+                ]
+            ]
 
 
 youtube : String -> Html msg

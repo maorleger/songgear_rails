@@ -20,6 +20,10 @@ type Msg
     | DeleteBookmarkResponse (Result Http.Error ())
     | AvailablePlayerSpeeds (List Float)
     | SetPlayerSpeed Float
+    | UpdateStartLoop String
+    | UpdateEndLoop String
+    | StartLoop
+    | EndLoop
 
 
 type alias Model =

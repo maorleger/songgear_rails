@@ -36,7 +36,7 @@ document.addEventListener('turbolinks:load', () => {
     });
 
     app.ports.getYTPlayerTime.subscribe(function() {
-      app.ports.currentYTPlayerTime.send(Math.round(player.getCurrentTime()));
+      app.ports.currentPlayerTimeReceived.send(Math.round(player.getCurrentTime()));
     });
 
     app.ports.startLoop.subscribe(function(loop) {

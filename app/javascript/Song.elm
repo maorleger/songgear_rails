@@ -16,7 +16,6 @@ module Song
         , playerSpeed
         , loopStart
         , loopEnd
-        , loop
         , setLoop
         )
 
@@ -38,6 +37,19 @@ type Song
         }
 
 
+init : String -> Maybe String -> Maybe String -> List Bookmark -> Song
+init title videoId note bookmarks =
+    Song
+        { title = title
+        , videoId = videoId
+        , note = note
+        , bookmarks = bookmarks
+        , playerSpeed = 1.0
+        , availableSpeeds = [ 1.0 ]
+        , loop = ( Nothing, Nothing )
+        }
+
+
 videoId : Song -> Maybe String
 videoId (Song song) =
     song.videoId
@@ -46,6 +58,75 @@ videoId (Song song) =
 bookmarks : Song -> List Bookmark
 bookmarks (Song song) =
     song.bookmarks
+
+
+availablePlayerSpeeds : Song -> List Float
+availablePlayerSpeeds (Song song) =
+    song.availableSpeeds
+
+
+title : Song -> String
+title (Song song) =
+    song.title
+
+
+playerSpeed : Song -> Float
+playerSpeed (Song song) =
+    song.playerSpeed
+
+
+note : Song -> Maybe String
+note (Song song) =
+    song.note
+
+
+loopStart : Song -> Maybe Int
+loopStart (Song song) =
+    song.loop
+        |> Tuple.first
+
+
+loopEnd : Song -> Maybe Int
+loopEnd (Song song) =
+    song.loop
+        |> Tuple.second
+
+
+addBookmark : Int -> Maybe Song -> Maybe Song
+addBookmark time =
+    Maybe.map
+        (\(Song song) ->
+            Song { song | bookmarks = song.bookmarks ++ [ Bookmark.init 0 "New bookmark" time ] }
+        )
+
+
+editBookmark : Int -> Maybe Song -> Maybe Song
+editBookmark bookmarkId =
+    Maybe.map
+        (\(Song song) ->
+            let
+                newBookmarks =
+                    bookmarks (Song song)
+                        |> Bookmark.edit bookmarkId
+            in
+                Song { song | bookmarks = newBookmarks }
+        )
+
+
+setLoop : Maybe Int -> Maybe Int -> Maybe Song -> Maybe Song
+setLoop start end =
+    Maybe.map
+        (\(Song song) ->
+            Song { song | loop = ( start, end ) }
+        )
+
+
+setPlayerSpeed : Float -> Maybe Song -> Maybe Song
+setPlayerSpeed newSpeed =
+    Maybe.map
+        (\(Song song) ->
+            Song { song | playerSpeed = newSpeed }
+        )
 
 
 setBookmarks : (List Bookmark -> List Bookmark) -> Maybe Song -> Maybe Song
@@ -66,87 +147,6 @@ setAvailablePlayerSpeeds speeds =
             (\(Song song) ->
                 Song { song | availableSpeeds = neededPlayerSpeeds }
             )
-
-
-availablePlayerSpeeds : Song -> List Float
-availablePlayerSpeeds (Song song) =
-    song.availableSpeeds
-
-
-setPlayerSpeed : Float -> Maybe Song -> Maybe Song
-setPlayerSpeed newSpeed =
-    Maybe.map
-        (\(Song song) ->
-            Song { song | playerSpeed = newSpeed }
-        )
-
-
-title : Song -> String
-title (Song song) =
-    song.title
-
-
-playerSpeed : Song -> Float
-playerSpeed (Song song) =
-    song.playerSpeed
-
-
-note : Song -> Maybe String
-note (Song song) =
-    song.note
-
-
-addBookmark : Int -> Song -> Song
-addBookmark time (Song song) =
-    Song { song | bookmarks = song.bookmarks ++ [ Bookmark.init 0 "New bookmark" time ] }
-
-
-editBookmark : Int -> Song -> Song
-editBookmark bookmarkId (Song song) =
-    let
-        newBookmarks =
-            bookmarks (Song song)
-                |> Bookmark.edit bookmarkId
-    in
-        Song { song | bookmarks = newBookmarks }
-
-
-init : String -> Maybe String -> Maybe String -> List Bookmark -> Song
-init title videoId note bookmarks =
-    Song
-        { title = title
-        , videoId = videoId
-        , note = note
-        , bookmarks = bookmarks
-        , playerSpeed = 1.0
-        , availableSpeeds = [ 1.0 ]
-        , loop = ( Nothing, Nothing )
-        }
-
-
-loopStart : Song -> Maybe Int
-loopStart (Song song) =
-    song.loop
-        |> Tuple.first
-
-
-loopEnd : Song -> Maybe Int
-loopEnd (Song song) =
-    song.loop
-        |> Tuple.second
-
-
-setLoop : Maybe Int -> Maybe Int -> Maybe Song -> Maybe Song
-setLoop start end =
-    Maybe.map
-        (\(Song song) ->
-            Song { song | loop = ( start, end ) }
-        )
-
-
-loop : Song -> ( Maybe Int, Maybe Int )
-loop (Song song) =
-    song.loop
 
 
 fetchSong : Int -> Http.Request Song

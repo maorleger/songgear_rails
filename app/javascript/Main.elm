@@ -72,9 +72,7 @@ update msg model =
         CurrentPlayerTime currentTime ->
             let
                 newSong =
-                    Maybe.map
-                        (Song.addBookmark currentTime)
-                        model.song
+                    (Song.addBookmark currentTime) model.song
             in
                 { model | song = newSong }
                     ! [ Http.send AddBookmarkResponse

@@ -7,14 +7,13 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var player;
-var videoId;
+var videoId = null;
 document.addEventListener('turbolinks:load', () => {
   const target = document.getElementById('elm-main')
 
   if (target) {
     var app = Elm.Main.embed(target, { songId: target.dataset.songId });
     app.ports.loadVideo.subscribe(function(videoId) {
-      debugger;
       videoId = videoId;
       setupPlayer(videoId, app.ports.playerSpeedsReceived);
     });
@@ -36,11 +35,17 @@ document.addEventListener('turbolinks:load', () => {
     });
 
     app.ports.startLoop.subscribe(function(loop) {
-      debugger;
-      player.loadVideoById({'videoId': videoId,
-        'startSeconds': loop[0],
-        'endSeconds': loop[1],
-      });
+      var position = null;
+      var start = 5 || loop[0];
+      var end = 10 || loop[1];
+      setInterval(function() {
+        position = player.getCurrentTime();
+        if (position >= end) {
+          player.seekTo(start);
+        }
+      }, 500);
+      player.seekTo(start);
+      player.loadVideoById
     });
   }
 })

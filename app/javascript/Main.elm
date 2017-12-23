@@ -159,17 +159,7 @@ update msg model =
         UpdateStartLoop seconds ->
             let
                 endSeconds =
-                    case model.song of
-                        Nothing ->
-                            Nothing
-
-                        Just song ->
-                            case Song.loopEnd song of
-                                Nothing ->
-                                    Nothing
-
-                                Just loopEnd ->
-                                    Just loopEnd
+                    Maybe.andThen Song.loopEnd model.song
 
                 startSeconds =
                     seconds
@@ -181,17 +171,7 @@ update msg model =
         UpdateEndLoop seconds ->
             let
                 startSeconds =
-                    case model.song of
-                        Nothing ->
-                            Nothing
-
-                        Just song ->
-                            case Song.loopStart song of
-                                Nothing ->
-                                    Nothing
-
-                                Just loopStart ->
-                                    Just loopStart
+                    Maybe.andThen Song.loopStart model.song
 
                 endSeconds =
                     String.toInt seconds
@@ -215,7 +195,7 @@ update msg model =
                 model ! [ cmd ]
 
         EndLoop ->
-            model ! []
+            model ! [ Youtube.endLoop () ]
 
 
 subscriptions : Model -> Sub Msg

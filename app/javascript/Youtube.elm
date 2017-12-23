@@ -5,6 +5,7 @@ port module Youtube
         , playerSpeedsReceived
         , setYTPlayerSpeed
         , startLoop
+        , endLoop
         , loadVideo
         , seekTo
         , view
@@ -39,6 +40,9 @@ port playerSpeedsReceived : (List Float -> msg) -> Sub msg
 
 
 port startLoop : ( Int, Int ) -> Cmd msg
+
+
+port endLoop : () -> Cmd msg
 
 
 view : Song -> Html Msg
@@ -132,14 +136,14 @@ loopControls song =
             , div [ classes ] <|
                 [ input
                     [ onInput UpdateStartLoop
-                    , Song.loopStart song
-                        |> val
+                    , val <| Song.loopStart song
+                    , type_ "number"
                     ]
                     []
                 , input
                     [ onInput UpdateEndLoop
-                    , Song.loopEnd song
-                        |> val
+                    , val <| Song.loopEnd song
+                    , type_ "number"
                     ]
                     []
                 , button [ onClick StartLoop ] [ text "Start" ]

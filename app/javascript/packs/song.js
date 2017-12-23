@@ -7,7 +7,12 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var player;
-var videoId = null;
+var playerControls = {
+  interval: null,
+  position: null,
+  loopStart: null,
+  loopEnd: null,
+}
 document.addEventListener('turbolinks:load', () => {
   const target = document.getElementById('elm-main')
 
@@ -35,17 +40,26 @@ document.addEventListener('turbolinks:load', () => {
     });
 
     app.ports.startLoop.subscribe(function(loop) {
-      var position = null;
-      var start = loop[0];
-      var end = loop[1];
-      setInterval(function() {
-        position = player.getCurrentTime();
-        if (position >= end) {
-          player.seekTo(start);
+      playerControls.loopStart = loop[0];
+      playerControls.loopEnd = loop[1];
+      var checkCurrentTime = function() {
+        playerControls.position = player.getCurrentTime();
+        if (playerControls.position >= playerControls.loopEnd) {
+          player.seekTo(playerControls.loopStart);
         }
-      }, 500);
-      player.seekTo(start);
+      }
+      if (playerControls.interval) {
+        clearInterval(playerControls.interval)
+      }
+      playerControls.interval = setInterval(checkCurrentTime, 500);
+      player.seekTo(playerControls.loopStart);
       player.loadVideoById
+    });
+
+    app.ports.endLoop.subscribe(function() {
+      if (playerControls.interval) {
+        clearInterval(playerControls.interval)
+      };
     });
   }
 })

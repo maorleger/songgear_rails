@@ -57,7 +57,18 @@ update msg model =
                   ]
 
         SeekTo seconds ->
-            model ! [ Youtube.seekTo seconds ]
+            let
+                parsedSeconds =
+                    Just seconds
+            in
+                { model
+                    | song =
+                        Song.updateLoop
+                            Song.LoopStart
+                            parsedSeconds
+                            model.song
+                }
+                    ! [ Youtube.seekTo seconds ]
 
         AddBookmark ->
             model ! [ Youtube.getYTPlayerTime () ]

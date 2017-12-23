@@ -159,18 +159,45 @@ update msg model =
         UpdateStartLoop seconds ->
             let
                 endSeconds =
-                    Maybe.map Song.loopEnd model.song
-                        |> Maybe.withDefault ""
+                    case model.song of
+                        Nothing ->
+                            Nothing
+
+                        Just song ->
+                            case Song.loopEnd song of
+                                Nothing ->
+                                    Nothing
+
+                                Just loopEnd ->
+                                    Just loopEnd
+
+                startSeconds =
+                    seconds
+                        |> String.toInt
+                        |> Result.toMaybe
             in
-                { model | song = Song.setLoop seconds endSeconds model.song } ! []
+                { model | song = Song.setLoop startSeconds endSeconds model.song } ! []
 
         UpdateEndLoop seconds ->
             let
                 startSeconds =
-                    Maybe.map Song.loopStart model.song
-                        |> Maybe.withDefault ""
+                    case model.song of
+                        Nothing ->
+                            Nothing
+
+                        Just song ->
+                            case Song.loopStart song of
+                                Nothing ->
+                                    Nothing
+
+                                Just loopStart ->
+                                    Just loopStart
+
+                endSeconds =
+                    String.toInt seconds
+                        |> Result.toMaybe
             in
-                { model | song = Song.setLoop startSeconds seconds model.song } ! []
+                { model | song = Song.setLoop startSeconds endSeconds model.song } ! []
 
         StartLoop ->
             let
@@ -179,8 +206,8 @@ update msg model =
 
                 cmd =
                     case loop of
-                        Just loop ->
-                            Youtube.startLoop loop
+                        Just ( Just start, Just end ) ->
+                            Youtube.startLoop ( start, end )
 
                         _ ->
                             Cmd.none

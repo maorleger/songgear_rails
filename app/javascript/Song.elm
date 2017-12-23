@@ -34,7 +34,7 @@ type Song
         , bookmarks : List Bookmark
         , playerSpeed : Float
         , availableSpeeds : List Float
-        , loop : ( String, String )
+        , loop : ( Maybe Int, Maybe Int )
         }
 
 
@@ -120,23 +120,23 @@ init title videoId note bookmarks =
         , bookmarks = bookmarks
         , playerSpeed = 1.0
         , availableSpeeds = [ 1.0 ]
-        , loop = ( "", "" )
+        , loop = ( Nothing, Nothing )
         }
 
 
-loopStart : Song -> String
+loopStart : Song -> Maybe Int
 loopStart (Song song) =
     song.loop
         |> Tuple.first
 
 
-loopEnd : Song -> String
+loopEnd : Song -> Maybe Int
 loopEnd (Song song) =
     song.loop
         |> Tuple.second
 
 
-setLoop : String -> String -> Maybe Song -> Maybe Song
+setLoop : Maybe Int -> Maybe Int -> Maybe Song -> Maybe Song
 setLoop start end =
     Maybe.map
         (\(Song song) ->
@@ -144,7 +144,7 @@ setLoop start end =
         )
 
 
-loop : Song -> ( String, String )
+loop : Song -> ( Maybe Int, Maybe Int )
 loop (Song song) =
     song.loop
 

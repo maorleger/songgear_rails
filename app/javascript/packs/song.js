@@ -36,8 +36,8 @@ document.addEventListener('turbolinks:load', () => {
 
     app.ports.startLoop.subscribe(function(loop) {
       var position = null;
-      var start = 5 || loop[0];
-      var end = 10 || loop[1];
+      var start = loop[0];
+      var end = loop[1];
       setInterval(function() {
         position = player.getCurrentTime();
         if (position >= end) {

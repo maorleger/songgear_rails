@@ -38,7 +38,7 @@ port setYTPlayerSpeed : Float -> Cmd msg
 port playerSpeedsReceived : (List Float -> msg) -> Sub msg
 
 
-port startLoop : ( String, String ) -> Cmd msg
+port startLoop : ( Int, Int ) -> Cmd msg
 
 
 view : Song -> Html Msg
@@ -121,18 +121,25 @@ loopControls song =
         classes =
             []
                 |> U.toClassList
+
+        val loopVal =
+            Maybe.map toString loopVal
+                |> Maybe.withDefault ""
+                |> value
     in
         div [ class "card" ]
             [ div [ class "card-header" ] [ text "Loop controls" ]
             , div [ classes ] <|
                 [ input
                     [ onInput UpdateStartLoop
-                    , value <| Song.loopStart song
+                    , Song.loopStart song
+                        |> val
                     ]
                     []
                 , input
                     [ onInput UpdateEndLoop
-                    , value <| Song.loopEnd song
+                    , Song.loopEnd song
+                        |> val
                     ]
                     []
                 , button [ onClick StartLoop ] [ text "Start" ]

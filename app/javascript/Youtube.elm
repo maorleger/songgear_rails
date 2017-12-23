@@ -15,7 +15,7 @@ import Html exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Html.Attributes exposing (classList, class, id, href, type_, value)
 import Html.Keyed as Keyed
-import Song exposing (Song)
+import Song exposing (Song, LoopPosition(..))
 import Bookmark exposing (Bookmark)
 import Utilities as U
 import Types exposing (..)
@@ -65,8 +65,8 @@ view song =
                 , div
                     [ class "col-md-4" ]
                     [ div []
-                        [ playerSpeedControls song
-                        , loopControls song
+                        [ loopControls song
+                        , playerSpeedControls song
                         , Bookmark.view (Song.bookmarks song) bookmarkEvents
                         ]
                     ]
@@ -122,32 +122,69 @@ playerSpeedControls song =
 loopControls : Song -> Html Msg
 loopControls song =
     let
-        classes =
-            []
+        bodyClasses =
+            [ "form-check"
+            , "form-check-inline"
+            , "d-flex"
+            , "justify-content-center"
+            ]
+                |> U.toClassList
+
+        headerClasses =
+            [ "card-header"
+            , "d-flex"
+            , "align-items-center"
+            , "justify-content-between"
+            ]
                 |> U.toClassList
 
         val loopVal =
             Maybe.map toString loopVal
                 |> Maybe.withDefault ""
                 |> value
+
+        btn onClick_ text_ icon =
+            span []
+                [ a [ class "btn", onClick onClick_ ]
+                    [ i
+                        [ class <| "fa " ++ icon
+                        , onClick onClick_
+                        ]
+                        []
+                    ]
+                ]
     in
         div [ class "card" ]
-            [ div [ class "card-header" ] [ text "Loop controls" ]
-            , div [ classes ] <|
-                [ input
-                    [ onInput UpdateStartLoop
-                    , val <| Song.loopStart song
-                    , type_ "number"
+            [ div [ headerClasses ]
+                [ span [] [ text "Loop controls" ]
+                , span []
+                    [ btn StartLoop "Play" "fa-play"
+                    , btn EndLoop "Stop" "fa-stop"
                     ]
-                    []
-                , input
-                    [ onInput UpdateEndLoop
-                    , val <| Song.loopEnd song
-                    , type_ "number"
+                ]
+            , div [ class "card-body" ] <|
+                [ div [ bodyClasses ]
+                    [ div [ class "form-group" ]
+                        [ label [] [ text "Start" ]
+                        , input
+                            [ onInput (UpdateLoop LoopStart)
+                            , val <| Song.loopStart song
+                            , type_ "number"
+                            , class "form-control"
+                            ]
+                            []
+                        ]
+                    , div [ class "form-group" ]
+                        [ label [] [ text "End" ]
+                        , input
+                            [ onInput (UpdateLoop LoopEnd)
+                            , val <| Song.loopEnd song
+                            , type_ "number"
+                            , class "form-control"
+                            ]
+                            []
+                        ]
                     ]
-                    []
-                , button [ onClick StartLoop ] [ text "Start" ]
-                , button [ onClick EndLoop ] [ text "End" ]
                 ]
             ]
 

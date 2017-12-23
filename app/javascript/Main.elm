@@ -154,28 +154,13 @@ update msg model =
         AvailablePlayerSpeeds playerSpeeds ->
             { model | song = Song.setAvailablePlayerSpeeds playerSpeeds model.song } ! []
 
-        UpdateStartLoop seconds ->
+        UpdateLoop loopPosition seconds ->
             let
-                endSeconds =
-                    Maybe.andThen Song.loopEnd model.song
-
-                startSeconds =
-                    seconds
-                        |> String.toInt
-                        |> Result.toMaybe
-            in
-                { model | song = Song.setLoop startSeconds endSeconds model.song } ! []
-
-        UpdateEndLoop seconds ->
-            let
-                startSeconds =
-                    Maybe.andThen Song.loopStart model.song
-
-                endSeconds =
+                parsedSeconds =
                     String.toInt seconds
                         |> Result.toMaybe
             in
-                { model | song = Song.setLoop startSeconds endSeconds model.song } ! []
+                { model | song = Song.updateLoop loopPosition parsedSeconds model.song } ! []
 
         StartLoop ->
             let

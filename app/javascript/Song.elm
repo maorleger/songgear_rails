@@ -1,6 +1,7 @@
 module Song
     exposing
         ( Song
+        , LoopPosition(..)
         , addBookmark
         , editBookmark
         , bookmarks
@@ -16,13 +17,18 @@ module Song
         , playerSpeed
         , loopStart
         , loopEnd
-        , setLoop
+        , updateLoop
         )
 
 import Http
 import Json.Decode as Decode
 import Bookmark exposing (Bookmark)
 import Utilities as U
+
+
+type LoopPosition
+    = LoopStart
+    | LoopEnd
 
 
 type Song
@@ -113,12 +119,22 @@ editBookmark bookmarkId =
         )
 
 
-setLoop : Maybe Int -> Maybe Int -> Maybe Song -> Maybe Song
-setLoop start end =
-    Maybe.map
-        (\(Song song) ->
-            Song { song | loop = ( start, end ) }
-        )
+updateLoop : LoopPosition -> Maybe Int -> Maybe Song -> Maybe Song
+updateLoop loopPosition newLoopValue song =
+    let
+        newLoop =
+            case loopPosition of
+                LoopStart ->
+                    ( newLoopValue, Maybe.andThen loopEnd song )
+
+                LoopEnd ->
+                    ( Maybe.andThen loopStart song, newLoopValue )
+    in
+        Maybe.map
+            (\(Song song) ->
+                Song { song | loop = newLoop }
+            )
+            song
 
 
 setPlayerSpeed : Float -> Maybe Song -> Maybe Song

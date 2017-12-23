@@ -76,7 +76,7 @@ function setupPlayer(videoId, callback) {
           videoId: videoId,
           playerVars: { 'playsinline': 1 },
         });
-        setTimeout(() => { callback.send(player.getAvailablePlaybackRates()) }, 1000);
+        setTimeout(() => { callback.send(player.getAvailablePlaybackRates()) }, 2000);
       } catch (err) {
         if (retryCount < numRetries) {
           console.log("retrying YT player");

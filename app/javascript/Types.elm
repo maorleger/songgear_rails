@@ -1,6 +1,6 @@
 module Types exposing (..)
 
-import Song exposing (Song)
+import Song exposing (Song, LoopPosition)
 import Bookmark exposing (Bookmark)
 import Http
 
@@ -20,8 +20,7 @@ type Msg
     | DeleteBookmarkResponse (Result Http.Error ())
     | AvailablePlayerSpeeds (List Float)
     | SetPlayerSpeed Float
-    | UpdateStartLoop String
-    | UpdateEndLoop String
+    | UpdateLoop LoopPosition String
     | StartLoop
     | EndLoop
 

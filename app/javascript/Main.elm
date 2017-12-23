@@ -181,13 +181,21 @@ update msg model =
 
         StartLoop ->
             let
-                loop =
-                    Maybe.map Song.loop model.song
+                loopStart =
+                    model.song
+                        |> Maybe.andThen Song.loopStart
+
+                loopEnd =
+                    model.song
+                        |> Maybe.andThen Song.loopEnd
 
                 cmd =
-                    case loop of
-                        Just ( Just start, Just end ) ->
-                            Youtube.startLoop ( start, end )
+                    case ( loopStart, loopEnd ) of
+                        ( Just start, Just end ) ->
+                            if start < end then
+                                Youtube.startLoop ( start, end )
+                            else
+                                Cmd.none
 
                         _ ->
                             Cmd.none

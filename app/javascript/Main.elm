@@ -72,9 +72,7 @@ update msg model =
         CurrentPlayerTime currentTime ->
             let
                 newSong =
-                    Maybe.map
-                        (Song.addBookmark currentTime)
-                        model.song
+                    (Song.addBookmark currentTime) model.song
             in
                 { model | song = newSong }
                     ! [ Http.send AddBookmarkResponse
@@ -155,6 +153,40 @@ update msg model =
 
         AvailablePlayerSpeeds playerSpeeds ->
             { model | song = Song.setAvailablePlayerSpeeds playerSpeeds model.song } ! []
+
+        UpdateLoop loopPosition seconds ->
+            let
+                parsedSeconds =
+                    String.toInt seconds
+                        |> Result.toMaybe
+            in
+                { model | song = Song.updateLoop loopPosition parsedSeconds model.song } ! []
+
+        StartLoop ->
+            let
+                loopStart =
+                    model.song
+                        |> Maybe.andThen Song.loopStart
+
+                loopEnd =
+                    model.song
+                        |> Maybe.andThen Song.loopEnd
+
+                cmd =
+                    case ( loopStart, loopEnd ) of
+                        ( Just start, Just end ) ->
+                            if start < end then
+                                Youtube.startLoop ( start, end )
+                            else
+                                Cmd.none
+
+                        _ ->
+                            Cmd.none
+            in
+                model ! [ cmd ]
+
+        EndLoop ->
+            model ! [ Youtube.endLoop () ]
 
 
 subscriptions : Model -> Sub Msg

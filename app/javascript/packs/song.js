@@ -7,12 +7,19 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var player;
+var playerControls = {
+  interval: null,
+  position: null,
+  loopStart: null,
+  loopEnd: null,
+}
 document.addEventListener('turbolinks:load', () => {
   const target = document.getElementById('elm-main')
 
   if (target) {
     var app = Elm.Main.embed(target, { songId: target.dataset.songId });
     app.ports.loadVideo.subscribe(function(videoId) {
+      videoId = videoId;
       setupPlayer(videoId, app.ports.playerSpeedsReceived);
     });
 
@@ -29,7 +36,30 @@ document.addEventListener('turbolinks:load', () => {
     });
 
     app.ports.getYTPlayerTime.subscribe(function() {
-      app.ports.currentYTPlayerTime.send(Math.round(player.getCurrentTime()));
+      app.ports.currentPlayerTimeReceived.send(Math.round(player.getCurrentTime()));
+    });
+
+    app.ports.startLoop.subscribe(function(loop) {
+      playerControls.loopStart = loop[0];
+      playerControls.loopEnd = loop[1];
+      var checkCurrentTime = function() {
+        playerControls.position = player.getCurrentTime();
+        if (playerControls.position >= playerControls.loopEnd) {
+          player.seekTo(playerControls.loopStart);
+        }
+      }
+      if (playerControls.interval) {
+        clearInterval(playerControls.interval)
+      }
+      playerControls.interval = setInterval(checkCurrentTime, 500);
+      player.seekTo(playerControls.loopStart);
+      player.loadVideoById
+    });
+
+    app.ports.endLoop.subscribe(function() {
+      if (playerControls.interval) {
+        clearInterval(playerControls.interval)
+      };
     });
   }
 })
@@ -46,7 +76,7 @@ function setupPlayer(videoId, callback) {
           videoId: videoId,
           playerVars: { 'playsinline': 1 },
         });
-        setTimeout(() => { callback.send(player.getAvailablePlaybackRates()) }, 1000);
+        setTimeout(() => { callback.send(player.getAvailablePlaybackRates()) }, 2000);
       } catch (err) {
         if (retryCount < numRetries) {
           console.log("retrying YT player");

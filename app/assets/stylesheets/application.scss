@@ -2,9 +2,10 @@
  *= require_tree .
  *= require_self
  */
-@import "bootstrap";
+// @import "bootstrap";
 @import "font-awesome-sprockets";
 @import "font-awesome";
+@import "bulma";
 
 .SongGear__container {
   padding-top: 30px;

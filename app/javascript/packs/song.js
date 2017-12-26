@@ -53,12 +53,12 @@ document.addEventListener('turbolinks:load', () => {
       }
       playerControls.interval = setInterval(checkCurrentTime, 500);
       player.seekTo(playerControls.loopStart);
-      player.loadVideoById
     });
 
     app.ports.endLoop.subscribe(function() {
       if (playerControls.interval) {
-        clearInterval(playerControls.interval)
+        clearInterval(playerControls.interval);
+        player.pauseVideo();
       };
     });
   }
